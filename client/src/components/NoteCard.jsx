@@ -23,19 +23,19 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
     >
       <Link
         to={`/note/${note._id}`}
-        className="block p-4 bg-dark-800/30 border border-dark-700/50 rounded-xl hover:border-dark-600 hover:bg-dark-800/50 transition-all"
+        className="block p-4 bg-white dark:bg-dark-800/30 border border-gray-200 dark:border-dark-700/50 rounded-xl hover:border-gray-300 dark:hover:border-dark-600 hover:bg-gray-50 dark:hover:bg-dark-800/50 transition-all shadow-sm dark:shadow-none"
       >
         {/* Header */}
         <div className="flex items-start gap-3 mb-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               {note.isPinned && (
-                <Pin className="w-3 h-3 text-primary-400" />
+                <Pin className="w-3 h-3 text-primary-500" />
               )}
-              <h3 className="font-semibold truncate">{note.title}</h3>
+              <h3 className="font-semibold truncate text-gray-900 dark:text-white">{note.title}</h3>
             </div>
             {note.notebook && (
-              <div className="flex items-center gap-1 text-xs text-dark-500 mt-1">
+              <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-dark-500 mt-1">
                 <span>{note.notebook.icon || '📓'}</span>
                 <span className="truncate">{note.notebook.title}</span>
               </div>
@@ -47,7 +47,7 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
         </div>
 
         {/* Preview */}
-        <p className="text-dark-400 text-sm line-clamp-2 mb-3">
+        <p className="text-gray-500 dark:text-dark-400 text-sm line-clamp-2 mb-3">
           {getPreviewText(note.content) || 'Empty note...'}
         </p>
 
@@ -57,13 +57,13 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             {note.tags.slice(0, 3).map((tag, i) => (
               <span
                 key={i}
-                className="px-2 py-0.5 bg-dark-700 rounded-full text-xs text-dark-300"
+                className="px-2 py-0.5 bg-gray-100 dark:bg-dark-700 rounded-full text-xs text-gray-600 dark:text-dark-300"
               >
                 #{tag}
               </span>
             ))}
             {note.tags.length > 3 && (
-              <span className="px-2 py-0.5 text-xs text-dark-500">
+              <span className="px-2 py-0.5 text-xs text-gray-400 dark:text-dark-500">
                 +{note.tags.length - 3}
               </span>
             )}
@@ -71,7 +71,7 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between text-xs text-dark-500">
+        <div className="flex items-center justify-between text-xs text-gray-400 dark:text-dark-500">
           <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
         </div>
       </Link>
@@ -85,8 +85,8 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
           }}
           className={`p-1.5 rounded-lg transition-colors ${
             note.isFavorite 
-              ? 'bg-yellow-500/20 text-yellow-400' 
-              : 'bg-dark-700/80 hover:bg-dark-600 text-dark-400'
+              ? 'bg-yellow-500/20 text-yellow-500' 
+              : 'bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 text-gray-400 dark:text-dark-400'
           }`}
         >
           <Star className={`w-3.5 h-3.5 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
@@ -98,8 +98,8 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
           }}
           className={`p-1.5 rounded-lg transition-colors ${
             note.isPinned 
-              ? 'bg-primary-500/20 text-primary-400' 
-              : 'bg-dark-700/80 hover:bg-dark-600 text-dark-400'
+              ? 'bg-primary-500/20 text-primary-500' 
+              : 'bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 text-gray-400 dark:text-dark-400'
           }`}
         >
           <Pin className="w-3.5 h-3.5" />
@@ -109,7 +109,7 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.preventDefault();
             setShowMenu(!showMenu);
           }}
-          className="p-1.5 bg-dark-700/80 hover:bg-dark-600 rounded-lg text-dark-400 transition-colors"
+          className="p-1.5 bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg text-gray-400 dark:text-dark-400 transition-colors"
         >
           <MoreHorizontal className="w-3.5 h-3.5" />
         </button>
@@ -121,13 +121,13 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
               className="fixed inset-0 z-10" 
               onClick={() => setShowMenu(false)} 
             />
-            <div className="absolute right-0 top-8 w-40 bg-dark-800 border border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden">
+            <div className="absolute right-0 top-8 w-40 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden">
               <button
                 onClick={() => {
                   onDelete?.(note._id);
                   setShowMenu(false);
                 }}
-                className="flex items-center gap-2 w-full px-3 py-2 hover:bg-red-500/10 text-red-400 transition-colors text-sm"
+                className="flex items-center gap-2 w-full px-3 py-2 hover:bg-red-500/10 text-red-500 transition-colors text-sm"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Delete</span>

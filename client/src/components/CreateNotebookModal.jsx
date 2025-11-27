@@ -58,22 +58,23 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50 px-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={(e) => e.target === e.currentTarget && onClose()}
           >
-            <div className="bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-md">
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-dark-700">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary-500/20 rounded-lg">
                     <BookOpen className="w-5 h-5 text-primary-400" />
                   </div>
-                  <h2 className="text-lg font-semibold">Create Notebook</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Create Notebook</h2>
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-dark-800 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-dark-800 rounded-lg transition-colors"
                 >
-                  <X className="w-5 h-5 text-dark-400" />
+                  <X className="w-5 h-5 text-gray-500 dark:text-dark-400" />
                 </button>
               </div>
 
@@ -91,31 +92,31 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
 
                 {/* Title */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Title</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Title</label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="My Notebook"
-                    className="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 transition-colors"
+                    className="w-full px-4 py-3 bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 transition-colors text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-dark-400"
                   />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Description (optional)</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Description (optional)</label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="What's this notebook about?"
                     rows={2}
-                    className="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 transition-colors resize-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-dark-400"
                   />
                 </div>
 
                 {/* Icon Selection */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Icon</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Icon</label>
                   <div className="flex flex-wrap gap-2">
                     {ICONS.map((i) => (
                       <button
@@ -125,7 +126,7 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
                         className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl transition-all ${
                           icon === i 
                             ? 'bg-primary-500/20 ring-2 ring-primary-500' 
-                            : 'bg-dark-800 hover:bg-dark-700'
+                            : 'bg-gray-100 dark:bg-dark-800 hover:bg-gray-200 dark:hover:bg-dark-700'
                         }`}
                       >
                         {i}
@@ -136,7 +137,7 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
 
                 {/* Color Selection */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Color</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">Color</label>
                   <div className="flex flex-wrap gap-2">
                     {COLORS.map((c) => (
                       <button
@@ -144,7 +145,7 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
                         type="button"
                         onClick={() => setColor(c)}
                         className={`w-8 h-8 rounded-full transition-all ${
-                          color === c ? 'ring-2 ring-white ring-offset-2 ring-offset-dark-900' : ''
+                          color === c ? 'ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900' : ''
                         }`}
                         style={{ backgroundColor: c }}
                       />
@@ -156,7 +157,7 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-3 bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl font-semibold text-white hover:shadow-lg hover:shadow-primary-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />

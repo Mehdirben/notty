@@ -15,7 +15,7 @@ const NotebookCard = ({ notebook, onEdit, onDelete, onArchive }) => {
     >
       <Link
         to={`/notebook/${notebook._id}`}
-        className="block p-6 bg-dark-800/50 border border-dark-700 rounded-2xl hover:border-dark-600 transition-all"
+        className="block p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-2xl hover:border-gray-300 dark:hover:border-dark-600 transition-all shadow-sm dark:shadow-none"
       >
         {/* Icon & Color Accent */}
         <div 
@@ -30,13 +30,13 @@ const NotebookCard = ({ notebook, onEdit, onDelete, onArchive }) => {
         </div>
 
         {/* Title & Description */}
-        <h3 className="text-lg font-semibold mb-1 truncate">{notebook.title}</h3>
-        <p className="text-dark-400 text-sm line-clamp-2 mb-4">
+        <h3 className="text-lg font-semibold mb-1 truncate text-gray-900 dark:text-white">{notebook.title}</h3>
+        <p className="text-gray-500 dark:text-dark-400 text-sm line-clamp-2 mb-4">
           {notebook.description || 'No description'}
         </p>
 
         {/* Stats */}
-        <div className="flex items-center gap-4 text-sm text-dark-500">
+        <div className="flex items-center gap-4 text-sm text-gray-400 dark:text-dark-500">
           <span>{notebook.noteCount || 0} notes</span>
           <span>•</span>
           <span>{new Date(notebook.updatedAt).toLocaleDateString()}</span>
@@ -56,9 +56,9 @@ const NotebookCard = ({ notebook, onEdit, onDelete, onArchive }) => {
             e.preventDefault();
             setShowMenu(!showMenu);
           }}
-          className="p-2 bg-dark-700/80 hover:bg-dark-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+          className="p-2 bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
         >
-          <MoreHorizontal className="w-4 h-4" />
+          <MoreHorizontal className="w-4 h-4 text-gray-500 dark:text-white" />
         </button>
 
         {/* Dropdown Menu */}
@@ -68,15 +68,15 @@ const NotebookCard = ({ notebook, onEdit, onDelete, onArchive }) => {
               className="fixed inset-0 z-10" 
               onClick={() => setShowMenu(false)} 
             />
-            <div className="absolute right-0 top-12 w-48 bg-dark-800 border border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden">
+            <div className="absolute right-0 top-12 w-48 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden">
               <button
                 onClick={() => {
                   onEdit?.(notebook);
                   setShowMenu(false);
                 }}
-                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-dark-700 transition-colors"
+                className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
               >
-                <Edit2 className="w-4 h-4 text-dark-400" />
+                <Edit2 className="w-4 h-4 text-gray-400 dark:text-dark-400" />
                 <span>Edit</span>
               </button>
               <button
@@ -84,9 +84,9 @@ const NotebookCard = ({ notebook, onEdit, onDelete, onArchive }) => {
                   onArchive?.(notebook);
                   setShowMenu(false);
                 }}
-                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-dark-700 transition-colors"
+                className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
               >
-                <Archive className="w-4 h-4 text-dark-400" />
+                <Archive className="w-4 h-4 text-gray-400 dark:text-dark-400" />
                 <span>Archive</span>
               </button>
               <button
@@ -94,7 +94,7 @@ const NotebookCard = ({ notebook, onEdit, onDelete, onArchive }) => {
                   onDelete?.(notebook);
                   setShowMenu(false);
                 }}
-                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-400 transition-colors"
+                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-500 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
                 <span>Delete</span>

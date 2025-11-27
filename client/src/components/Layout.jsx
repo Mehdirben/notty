@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
   }, [fetchNotebooks]);
 
   return (
-    <div className="min-h-screen bg-dark-950 text-white">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white transition-colors duration-300">
       <Sidebar />
       <SearchModal />
       <main 

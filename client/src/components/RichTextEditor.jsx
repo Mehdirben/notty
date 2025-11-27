@@ -37,8 +37,8 @@ const MenuButton = ({ onClick, isActive, disabled, children, title }) => (
     title={title}
     className={`p-2 rounded-lg transition-colors ${
       isActive 
-        ? 'bg-primary-500/20 text-primary-400' 
-        : 'text-dark-400 hover:bg-dark-700 hover:text-white'
+        ? 'bg-primary-500/20 text-primary-500' 
+        : 'text-gray-500 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-gray-900 dark:hover:text-white'
     } disabled:opacity-50 disabled:cursor-not-allowed`}
   >
     {children}
@@ -134,9 +134,9 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
   }
 
   return (
-    <div className="border border-dark-700 rounded-xl overflow-hidden bg-dark-800/50">
+    <div className="border border-gray-200 dark:border-dark-700 rounded-xl overflow-hidden bg-white dark:bg-dark-800/50">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-dark-700 bg-dark-800">
+      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-gray-200 dark:border-dark-700 bg-gray-50 dark:bg-dark-800">
         {/* Text Formatting */}
         <div className="flex items-center gap-1">
           <MenuButton
@@ -169,7 +169,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
 
         {/* Headings */}
         <div className="flex items-center gap-1">
@@ -196,7 +196,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
 
         {/* Lists */}
         <div className="flex items-center gap-1">
@@ -223,7 +223,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
 
         {/* Blocks */}
         <div className="flex items-center gap-1">
@@ -243,7 +243,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
 
         {/* Media */}
         <div className="flex items-center gap-1">

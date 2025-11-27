@@ -43,9 +43,9 @@ const FavoritesPage = () => {
             <div className="p-2 bg-yellow-500/20 rounded-xl">
               <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
             </div>
-            <h1 className="text-3xl font-bold">Favorites</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Favorites</h1>
           </div>
-          <p className="text-dark-400">Your starred notes for quick access.</p>
+          <p className="text-gray-500 dark:text-dark-400">Your starred notes for quick access.</p>
         </motion.div>
 
         {/* Notes Grid */}
@@ -73,11 +73,11 @@ const FavoritesPage = () => {
             animate={{ opacity: 1 }}
             className="text-center py-16"
           >
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-800 flex items-center justify-center">
-              <Star className="w-8 h-8 text-dark-500" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 dark:bg-dark-800 flex items-center justify-center">
+              <Star className="w-8 h-8 text-gray-400 dark:text-dark-500" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No favorites yet</h3>
-            <p className="text-dark-400">
+            <h3 className="text-lg font-medium mb-2 text-gray-900 dark:text-white">No favorites yet</h3>
+            <p className="text-gray-500 dark:text-dark-400">
               Star notes to add them to your favorites for quick access.
             </p>
           </motion.div>

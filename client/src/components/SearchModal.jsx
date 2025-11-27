@@ -76,23 +76,23 @@ const SearchModal = () => {
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4"
           >
-            <div className="bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden">
               {/* Search Input */}
-              <div className="flex items-center gap-3 px-4 py-4 border-b border-dark-700">
-                <Search className="w-5 h-5 text-dark-400" />
+              <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-200 dark:border-dark-700">
+                <Search className="w-5 h-5 text-gray-400 dark:text-dark-400" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search notes..."
-                  className="flex-1 bg-transparent outline-none text-lg"
+                  className="flex-1 bg-transparent outline-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-dark-400"
                 />
                 <button
                   onClick={() => setSearchOpen(false)}
-                  className="p-1 hover:bg-dark-800 rounded-lg transition-colors"
+                  className="p-1 hover:bg-gray-100 dark:hover:bg-dark-800 rounded-lg transition-colors"
                 >
-                  <X className="w-5 h-5 text-dark-400" />
+                  <X className="w-5 h-5 text-gray-400 dark:text-dark-400" />
                 </button>
               </div>
 
@@ -104,14 +104,14 @@ const SearchModal = () => {
                       <button
                         key={note._id}
                         onClick={() => handleSelect(note)}
-                        className="w-full flex items-start gap-3 p-3 hover:bg-dark-800 rounded-xl transition-colors text-left"
+                        className="w-full flex items-start gap-3 p-3 hover:bg-gray-100 dark:hover:bg-dark-800 rounded-xl transition-colors text-left"
                       >
-                        <div className="p-2 bg-dark-800 rounded-lg">
-                          <FileText className="w-4 h-4 text-primary-400" />
+                        <div className="p-2 bg-gray-100 dark:bg-dark-800 rounded-lg">
+                          <FileText className="w-4 h-4 text-primary-500" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{note.title}</p>
-                          <div className="flex items-center gap-2 text-sm text-dark-400">
+                          <p className="font-medium truncate text-gray-900 dark:text-white">{note.title}</p>
+                          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-400">
                             <BookOpen className="w-3 h-3" />
                             <span className="truncate">{note.notebook?.title}</span>
                           </div>
@@ -120,16 +120,16 @@ const SearchModal = () => {
                     ))}
                   </div>
                 ) : query.trim() ? (
-                  <div className="p-8 text-center text-dark-400">
+                  <div className="p-8 text-center text-gray-500 dark:text-dark-400">
                     <p>No notes found for "{query}"</p>
                   </div>
                 ) : (
-                  <div className="p-8 text-center text-dark-400">
+                  <div className="p-8 text-center text-gray-500 dark:text-dark-400">
                     <p>Start typing to search your notes</p>
                     <p className="text-sm mt-2">
-                      <kbd className="px-2 py-1 bg-dark-800 rounded text-xs">⌘</kbd>
+                      <kbd className="px-2 py-1 bg-gray-100 dark:bg-dark-800 rounded text-xs text-gray-700 dark:text-white">⌘</kbd>
                       {' + '}
-                      <kbd className="px-2 py-1 bg-dark-800 rounded text-xs">K</kbd>
+                      <kbd className="px-2 py-1 bg-gray-100 dark:bg-dark-800 rounded text-xs text-gray-700 dark:text-white">K</kbd>
                       {' to open search'}
                     </p>
                   </div>

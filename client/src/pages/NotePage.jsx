@@ -126,21 +126,21 @@ const NotePage = () => {
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 z-20 bg-dark-950/80 backdrop-blur-lg border-b border-dark-800"
+          className="sticky top-0 z-20 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-gray-200 dark:border-dark-800"
         >
           <div className="flex items-center justify-between px-6 py-3">
             {/* Left Side */}
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-dark-400 hover:text-white transition-colors"
+                className="flex items-center gap-2 text-gray-500 dark:text-dark-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span className="hidden sm:inline">Back</span>
               </button>
               
               {currentNote.notebook && (
-                <div className="hidden sm:flex items-center gap-2 text-dark-400">
+                <div className="hidden sm:flex items-center gap-2 text-gray-500 dark:text-dark-400">
                   <span>{currentNote.notebook.icon || '📓'}</span>
                   <span>{currentNote.notebook.title}</span>
                 </div>
@@ -150,7 +150,7 @@ const NotePage = () => {
             {/* Right Side */}
             <div className="flex items-center gap-2">
               {/* Save Status */}
-              <div className="flex items-center gap-2 text-sm text-dark-400 mr-2">
+              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-400 mr-2">
                 {isSaving ? (
                   <>
                     <div className="w-3 h-3 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
@@ -163,7 +163,7 @@ const NotePage = () => {
                   </>
                 ) : lastSaved ? (
                   <>
-                    <Check className="w-3 h-3 text-green-400" />
+                    <Check className="w-3 h-3 text-green-500" />
                     <span className="hidden sm:inline">Saved</span>
                   </>
                 ) : null}
@@ -173,7 +173,7 @@ const NotePage = () => {
               <button
                 onClick={handleManualSave}
                 disabled={!hasChanges || isSaving}
-                className="p-2 hover:bg-dark-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-dark-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-500 dark:text-dark-400"
                 title="Save (⌘S)"
               >
                 <Save className="w-4 h-4" />
@@ -184,8 +184,8 @@ const NotePage = () => {
                 onClick={handleToggleFavorite}
                 className={`p-2 rounded-lg transition-colors ${
                   currentNote.isFavorite 
-                    ? 'bg-yellow-500/20 text-yellow-400' 
-                    : 'hover:bg-dark-800 text-dark-400'
+                    ? 'bg-yellow-500/20 text-yellow-500' 
+                    : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
                 }`}
               >
                 <Star className={`w-4 h-4 ${currentNote.isFavorite ? 'fill-yellow-400' : ''}`} />
@@ -196,8 +196,8 @@ const NotePage = () => {
                 onClick={handleTogglePin}
                 className={`p-2 rounded-lg transition-colors ${
                   currentNote.isPinned 
-                    ? 'bg-primary-500/20 text-primary-400' 
-                    : 'hover:bg-dark-800 text-dark-400'
+                    ? 'bg-primary-500/20 text-primary-500' 
+                    : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
                 }`}
               >
                 <Pin className="w-4 h-4" />
@@ -206,7 +206,7 @@ const NotePage = () => {
               {/* Delete */}
               <button
                 onClick={handleDelete}
-                className="p-2 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-colors text-dark-400"
+                className="p-2 hover:bg-red-500/20 hover:text-red-500 rounded-lg transition-colors text-gray-500 dark:text-dark-400"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -227,7 +227,7 @@ const NotePage = () => {
             value={title}
             onChange={handleTitleChange}
             placeholder="Untitled"
-            className="w-full text-3xl md:text-4xl font-bold bg-transparent border-none outline-none mb-6 placeholder:text-dark-600"
+            className="w-full text-3xl md:text-4xl font-bold bg-transparent border-none outline-none mb-6 placeholder:text-gray-400 dark:placeholder:text-dark-600 text-gray-900 dark:text-white"
           />
 
           {/* Tags */}
@@ -236,7 +236,7 @@ const NotePage = () => {
               {currentNote.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-dark-800 rounded-full text-sm text-dark-300"
+                  className="px-3 py-1 bg-gray-100 dark:bg-dark-800 rounded-full text-sm text-gray-600 dark:text-dark-300"
                 >
                   #{tag}
                 </span>
@@ -252,7 +252,7 @@ const NotePage = () => {
           />
 
           {/* Metadata */}
-          <div className="mt-8 pt-6 border-t border-dark-800 text-sm text-dark-500">
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-dark-800 text-sm text-gray-500 dark:text-dark-500">
             <p>Created: {new Date(currentNote.createdAt).toLocaleString()}</p>
             <p>Last updated: {new Date(currentNote.updatedAt).toLocaleString()}</p>
           </div>
