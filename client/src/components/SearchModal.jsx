@@ -71,12 +71,13 @@ const SearchModal = () => {
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4"
+            onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
           >
-            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl">
               {/* Search Input */}
               <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-200 dark:border-dark-700">
                 <Search className="w-5 h-5 text-gray-400 dark:text-dark-400" />
