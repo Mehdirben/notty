@@ -2,6 +2,18 @@
 
 This guide explains how to deploy the Notty note-taking application on [Coolify](https://coolify.io/), an open-source self-hostable platform.
 
+## ⚠️ Common Pitfalls (Read First!)
+
+Before deploying, be aware of these common issues:
+
+| Issue | Solution |
+|-------|----------|
+| **Bad Gateway** | Set correct **Ports Exposes**: Frontend = `80`, Backend = `5000` |
+| **Frontend can't reach API** | Set `VITE_API_URL` to backend URL **without** `/api` suffix, then **Rebuild** |
+| **Login "Server Error"** | Add `JWT_EXPIRE=7d` environment variable to backend |
+| **Changes not taking effect** | Use **Rebuild** not just Redeploy (Coolify caches images) |
+| **Healthcheck failing** | Already fixed in Dockerfile - uses `127.0.0.1` instead of `localhost` |
+
 ## Prerequisites
 
 - A server with Coolify installed ([Installation Guide](https://coolify.io/docs/get-started/installation))
@@ -103,20 +115,22 @@ volumes:
 
 Set the following environment variables in Coolify:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment mode | `production` |
-| `PORT` | Server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://user:pass@notty-mongodb:27017/notty?authSource=admin` |
-| `JWT_SECRET` | Secret for JWT tokens | Generate a secure random string (32+ chars) |
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `NODE_ENV` | Environment mode | `production` | Yes |
+| `PORT` | Server port | `5000` | Yes |
+| `MONGODB_URI` | MongoDB connection string | `mongodb://user:pass@notty-mongodb:27017/notty?authSource=admin` | Yes |
+| `JWT_SECRET` | Secret for JWT tokens | Generate a secure random string (32+ chars) | Yes |
+| `JWT_EXPIRE` | Token expiration time | `7d` (7 days), `30d`, `24h` | Yes |
 
 > **Tip**: Use Coolify's magic variables for passwords: `${SERVICE_PASSWORD_64_BACKEND}` to auto-generate a secure JWT secret.
 
-### Configuring the Domain
+### Configuring the Domain and Port
 
-1. In the backend resource settings, go to **Domains**
-2. Add your domain: `https://api.notty.yourdomain.com:5000`
-3. Coolify will automatically configure SSL via Let's Encrypt
+1. In the backend resource settings, go to **Settings**
+2. Set **Ports Exposes** to `5000` (the port your backend listens on)
+3. Go to **Domains** and add your domain: `https://api.notty.yourdomain.com`
+4. Coolify will automatically configure SSL via Let's Encrypt
 
 ---
 
@@ -136,15 +150,19 @@ Set the following environment variables in Coolify:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `VITE_API_URL` | Backend API URL | `https://api.notty.yourdomain.com` |
+| `VITE_API_URL` | Backend base URL (without `/api`) | `https://api.notty.yourdomain.com` |
 
-> **Note**: This is a **build argument**, not a runtime environment variable. Set it in the Build Arguments section.
+> **Important**: 
+> - Set `VITE_API_URL` to the backend URL **without** the `/api` suffix. The app automatically appends `/api` to the URL.
+> - This is a **build argument**, not a runtime environment variable. Set it in the Environment Variables section in Coolify.
+> - After changing this value, you must **Rebuild** (not just Redeploy) for changes to take effect.
 
-### Configuring the Domain
+### Configuring the Domain and Port
 
-1. In the frontend resource settings, go to **Domains**
-2. Add your domain: `https://notty.yourdomain.com`
-3. The frontend listens on port 80 internally
+1. In the frontend resource settings, go to **Settings**
+2. **Important**: Set **Ports Exposes** to `80` (Nginx serves on port 80, not 3000)
+3. Go to **Domains** and add your domain: `https://notty.yourdomain.com`
+4. The frontend uses Nginx to serve the built React app on port 80
 
 ---
 
@@ -267,17 +285,46 @@ volumes:
 
 - [ ] MongoDB deployed and running
 - [ ] MongoDB credentials noted
-- [ ] Backend deployed with correct environment variables
+- [ ] Backend deployed with correct environment variables:
+  - [ ] `NODE_ENV=production`
+  - [ ] `PORT=5000`
+  - [ ] `MONGODB_URI` (connection string with credentials)
+  - [ ] `JWT_SECRET` (secure random string)
+  - [ ] `JWT_EXPIRE` (e.g., `7d`)
+- [ ] Backend **Ports Exposes** set to `5000`
 - [ ] Backend domain configured with SSL
-- [ ] Frontend deployed with `VITE_API_URL` build argument
+- [ ] Frontend deployed with `VITE_API_URL` (backend URL without `/api`)
+- [ ] Frontend **Ports Exposes** set to `80`
 - [ ] Frontend domain configured with SSL
 - [ ] Predefined network enabled for service communication
 - [ ] Persistent storage configured for uploads
-- [ ] Test the application by creating an account and a note
+- [ ] Test the application:
+  - [ ] Can access frontend URL
+  - [ ] Can register a new account
+  - [ ] Can login
+  - [ ] Can create notebooks and notes
 
 ---
 
 ## Troubleshooting
+
+### Bad Gateway Error
+
+This usually means Coolify's proxy can't reach your container:
+
+1. **Check the Ports Exposes setting**:
+   - Frontend should be `80` (Nginx)
+   - Backend should be `5000` (Node.js)
+2. Verify the container is running and healthy in Coolify logs
+3. Rebuild the application if you recently changed the Dockerfile
+
+### Healthcheck Failing (Connection Refused)
+
+If you see healthcheck errors like `wget: can't connect to remote host`:
+
+1. Make sure the Dockerfile healthcheck uses `127.0.0.1` instead of `localhost` (IPv6 issues on Alpine)
+2. Verify the port in healthcheck matches the port your app listens on
+3. Check container logs for startup errors
 
 ### Backend can't connect to MongoDB
 
@@ -286,12 +333,29 @@ volumes:
 3. Verify the `MONGODB_URI` environment variable is correct
 4. Check MongoDB container name matches the hostname in the connection string
 
-### Frontend shows API errors
+### Login Returns "Server Error"
 
-1. Verify the `VITE_API_URL` build argument is set correctly
-2. Rebuild the frontend after changing the API URL
-3. Check browser console for CORS errors
-4. Verify backend is running and accessible
+This is usually caused by missing environment variables:
+
+1. Make sure `JWT_SECRET` is set in backend environment variables
+2. Make sure `JWT_EXPIRE` is set (e.g., `7d`)
+3. Check backend logs in Coolify for the actual error
+
+### Frontend Shows API Errors / Network Errors
+
+1. **Check VITE_API_URL**: Should be the backend URL without `/api` suffix (e.g., `https://api.notty.yourdomain.com`)
+2. **Rebuild required**: After changing `VITE_API_URL`, you must **Rebuild** (not just Redeploy) the frontend
+3. Check browser console (F12) for the actual API URL being called
+4. Verify backend is running and accessible by visiting `https://api.notty.yourdomain.com/api/health`
+5. Check for CORS errors in browser console
+
+### Image Cache Issues
+
+Coolify caches Docker images. If your changes aren't taking effect:
+
+1. Go to your resource in Coolify
+2. Click **Rebuild** instead of **Redeploy**
+3. Or enable **Force Rebuild** in settings
 
 ### Uploads not persisting
 
