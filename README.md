@@ -4,6 +4,10 @@
   <img src="client/public/notty-icon.svg" alt="Notty Logo" width="120" />
   <h3>Your Ideas, Beautifully Organized</h3>
   <p>A modern, feature-rich note-taking platform built with React, Node.js, Express, and MongoDB</p>
+  
+  <br />
+  
+  **[🚀 Deploy on Coolify](./COOLIFY_DEPLOYMENT.md)** | **[📖 Documentation](#-getting-started)**
 </div>
 
 ---
