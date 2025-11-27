@@ -18,6 +18,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @apply bg-gray-50 text-gray-900;
+  /* Prevent overscroll bounce on iOS */
+  overscroll-behavior: none;
+  /* Enable touch manipulation */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dark body,
@@ -35,23 +39,71 @@ html:not(.dark) {
   color-scheme: light;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* iOS Safe Area Support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .px-safe {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* Mobile-first touch improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets on mobile */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .notebook-card:hover {
+    transform: none;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
-  border-radius: 3px;
+/* Prevent text selection on interactive elements */
+button, .btn, [role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+/* Custom scrollbar - hidden on mobile */
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
+  }
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 1023px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* Glass morphism effect */
@@ -382,8 +434,10 @@ html.dark .ProseMirror p.is-editor-empty:first-child::before {
   transition: all 0.3s ease;
 }
 
-.notebook-card:hover {
-  transform: translateY(-4px);
+@media (hover: hover) {
+  .notebook-card:hover {
+    transform: translateY(-4px);
+  }
 }
 
 /* Note item hover effect */
@@ -391,10 +445,50 @@ html.dark .ProseMirror p.is-editor-empty:first-child::before {
   transition: all 0.2s ease;
 }
 
-.note-item:hover {
-  background: rgba(99, 102, 241, 0.05);
+@media (hover: hover) {
+  .note-item:hover {
+    background: rgba(99, 102, 241, 0.05);
+  }
+
+  .dark .note-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+  }
 }
 
-.dark .note-item:hover {
-  background: rgba(99, 102, 241, 0.1);
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile editor min height */
+@media (max-width: 640px) {
+  .ProseMirror {
+    min-height: 200px;
+  }
+}
+
+/* Pull to refresh indicator prevention */
+html, body {
+  overscroll-behavior-y: contain;
+}
+
+/* Smooth momentum scrolling on iOS */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Active states for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .active\:scale-95:active {
+    transform: scale(0.95);
+  }
+  
+  .active\:scale-\[0\.98\]:active {
+    transform: scale(0.98);
+  }
 }

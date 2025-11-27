@@ -38,20 +38,20 @@ const SettingsPage = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen p-8 max-w-4xl mx-auto">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 lg:mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-gray-100 dark:bg-dark-800 rounded-xl">
-              <Settings className="w-6 h-6 text-gray-500 dark:text-dark-400" />
+              <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 dark:text-dark-400" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
           </div>
-          <p className="text-gray-500 dark:text-dark-400">Manage your account and preferences.</p>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-dark-400">Manage your account and preferences.</p>
         </motion.div>
 
         {/* Profile Section */}
@@ -59,23 +59,23 @@ const SettingsPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8"
+          className="mb-6 lg:mb-8"
         >
-          <div className="p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-sm dark:shadow-none">
-            <div className="flex items-center gap-3 mb-6">
+          <div className="p-4 sm:p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-xl sm:rounded-2xl shadow-sm dark:shadow-none">
+            <div className="flex items-center gap-3 mb-4 sm:mb-6">
               <User className="w-5 h-5 text-primary-500" />
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Profile</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Profile</h2>
             </div>
 
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               {/* Avatar */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-2xl font-bold text-white">
+              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-xl sm:text-2xl font-bold text-white">
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">{user?.name}</p>
-                  <p className="text-gray-500 dark:text-dark-400 text-sm">{user?.email}</p>
+                <div className="min-w-0">
+                  <p className="font-medium text-gray-900 dark:text-white truncate">{user?.name}</p>
+                  <p className="text-gray-500 dark:text-dark-400 text-xs sm:text-sm truncate">{user?.email}</p>
                 </div>
               </div>
 

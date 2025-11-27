@@ -19,51 +19,52 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
+      whileTap={{ scale: 0.98 }}
       className="note-item relative group"
     >
       <Link
         to={`/note/${note._id}`}
-        className="block p-4 bg-white dark:bg-dark-800/30 border border-gray-200 dark:border-dark-700/50 rounded-xl hover:border-gray-300 dark:hover:border-dark-600 hover:bg-gray-50 dark:hover:bg-dark-800/50 transition-all shadow-sm dark:shadow-none"
+        className="block p-3 sm:p-4 bg-white dark:bg-dark-800/30 border border-gray-200 dark:border-dark-700/50 rounded-xl hover:border-gray-300 dark:hover:border-dark-600 active:bg-gray-50 dark:active:bg-dark-800/50 transition-all shadow-sm dark:shadow-none"
       >
         {/* Header */}
-        <div className="flex items-start gap-3 mb-2">
+        <div className="flex items-start gap-2 sm:gap-3 mb-2">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {note.isPinned && (
-                <Pin className="w-3 h-3 text-primary-500" />
+                <Pin className="w-3 h-3 text-primary-500 shrink-0" />
               )}
-              <h3 className="font-semibold truncate text-gray-900 dark:text-white">{note.title}</h3>
+              <h3 className="font-semibold truncate text-sm sm:text-base text-gray-900 dark:text-white">{note.title}</h3>
             </div>
             {note.notebook && (
-              <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-dark-500 mt-1">
+              <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-400 dark:text-dark-500 mt-1">
                 <span>{note.notebook.icon || '📓'}</span>
                 <span className="truncate">{note.notebook.title}</span>
               </div>
             )}
           </div>
           {note.isFavorite && (
-            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 flex-shrink-0" />
+            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400 flex-shrink-0" />
           )}
         </div>
 
         {/* Preview */}
-        <p className="text-gray-500 dark:text-dark-400 text-sm line-clamp-2 mb-3">
+        <p className="text-gray-500 dark:text-dark-400 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-3">
           {getPreviewText(note.content) || 'Empty note...'}
         </p>
 
         {/* Tags */}
         {note.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
+          <div className="flex flex-wrap gap-1 mb-2 sm:mb-3">
             {note.tags.slice(0, 3).map((tag, i) => (
               <span
                 key={i}
-                className="px-2 py-0.5 bg-gray-100 dark:bg-dark-700 rounded-full text-xs text-gray-600 dark:text-dark-300"
+                className="px-1.5 sm:px-2 py-0.5 bg-gray-100 dark:bg-dark-700 rounded-full text-[10px] sm:text-xs text-gray-600 dark:text-dark-300"
               >
                 #{tag}
               </span>
             ))}
             {note.tags.length > 3 && (
-              <span className="px-2 py-0.5 text-xs text-gray-400 dark:text-dark-500">
+              <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs text-gray-400 dark:text-dark-500">
                 +{note.tags.length - 3}
               </span>
             )}
@@ -71,7 +72,7 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between text-xs text-gray-400 dark:text-dark-500">
+        <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-400 dark:text-dark-500">
           <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
         </div>
       </Link>

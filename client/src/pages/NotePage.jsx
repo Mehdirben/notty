@@ -128,38 +128,38 @@ const NotePage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="sticky top-0 z-20 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-gray-200 dark:border-dark-800"
         >
-          <div className="flex items-center justify-between px-6 py-3">
+          <div className="flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3">
             {/* Left Side */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-gray-500 dark:text-dark-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="flex items-center gap-1 sm:gap-2 text-gray-500 dark:text-dark-400 hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span className="hidden sm:inline">Back</span>
               </button>
               
               {currentNote.notebook && (
-                <div className="hidden sm:flex items-center gap-2 text-gray-500 dark:text-dark-400">
+                <div className="hidden md:flex items-center gap-2 text-gray-500 dark:text-dark-400 truncate">
                   <span>{currentNote.notebook.icon || '📓'}</span>
-                  <span>{currentNote.notebook.title}</span>
+                  <span className="truncate">{currentNote.notebook.title}</span>
                 </div>
               )}
             </div>
 
             {/* Right Side */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Save Status */}
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-400 mr-2">
+              <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500 dark:text-dark-400 mr-1 sm:mr-2">
                 {isSaving ? (
                   <>
                     <div className="w-3 h-3 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
-                    <span>Saving...</span>
+                    <span className="hidden sm:inline">Saving...</span>
                   </>
                 ) : hasChanges ? (
                   <>
                     <Clock className="w-3 h-3" />
-                    <span>Unsaved</span>
+                    <span className="hidden sm:inline">Unsaved</span>
                   </>
                 ) : lastSaved ? (
                   <>
@@ -219,7 +219,7 @@ const NotePage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="flex-1 p-6 md:p-8 max-w-4xl mx-auto w-full"
+          className="flex-1 p-4 sm:p-6 md:p-8 max-w-4xl mx-auto w-full"
         >
           {/* Title */}
           <input
@@ -227,7 +227,7 @@ const NotePage = () => {
             value={title}
             onChange={handleTitleChange}
             placeholder="Untitled"
-            className="w-full text-3xl md:text-4xl font-bold bg-transparent border-none outline-none mb-6 placeholder:text-gray-400 dark:placeholder:text-dark-600 text-gray-900 dark:text-white"
+            className="w-full text-2xl sm:text-3xl md:text-4xl font-bold bg-transparent border-none outline-none mb-4 sm:mb-6 placeholder:text-gray-400 dark:placeholder:text-dark-600 text-gray-900 dark:text-white"
           />
 
           {/* Tags */}

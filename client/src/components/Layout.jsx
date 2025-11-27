@@ -1,28 +1,46 @@
 import { useEffect } from 'react';
 import Sidebar from './Sidebar';
 import SearchModal from './SearchModal';
+import MobileNav from './MobileNav';
 import useNotebookStore from '../store/notebookStore';
 import useUIStore from '../store/uiStore';
 
 const Layout = ({ children }) => {
   const { fetchNotebooks } = useNotebookStore();
-  const { sidebarOpen } = useUIStore();
+  const { sidebarOpen, setIsMobile, setSidebarOpen } = useUIStore();
 
   useEffect(() => {
     fetchNotebooks();
   }, [fetchNotebooks]);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [setIsMobile, setSidebarOpen]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white transition-colors duration-300">
       <Sidebar />
       <SearchModal />
       <main 
-        className={`min-h-screen transition-all duration-300 ${
-          sidebarOpen ? 'ml-[280px]' : 'ml-[72px]'
-        }`}
+        className={`min-h-screen transition-all duration-300 pb-20 lg:pb-0 ${
+          sidebarOpen ? 'lg:ml-[280px]' : 'lg:ml-[72px]'
+        } ml-0`}
       >
         {children}
       </main>
+      {/* Mobile Bottom Navigation */}
+      <MobileNav />
     </div>
   );
 };

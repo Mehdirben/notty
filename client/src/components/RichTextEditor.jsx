@@ -135,10 +135,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
 
   return (
     <div className="border border-gray-200 dark:border-dark-700 rounded-xl overflow-hidden bg-white dark:bg-dark-800/50">
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-gray-200 dark:border-dark-700 bg-gray-50 dark:bg-dark-800">
+      {/* Toolbar - Scrollable on mobile */}
+      <div className="flex items-center gap-1 p-2 border-b border-gray-200 dark:border-dark-700 bg-gray-50 dark:bg-dark-800 overflow-x-auto scrollbar-hide">
         {/* Text Formatting */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive('bold')}
@@ -169,10 +169,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
 
         {/* Headings */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             isActive={editor.isActive('heading', { level: 1 })}
@@ -196,10 +196,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
 
         {/* Lists */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             isActive={editor.isActive('bulletList')}
@@ -223,10 +223,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
 
         {/* Blocks */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             isActive={editor.isActive('blockquote')}
@@ -243,10 +243,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-1" />
+        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
 
         {/* Media */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton onClick={addImage} title="Add Image">
             <ImageIcon className="w-4 h-4" />
           </MenuButton>
@@ -259,10 +259,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           </MenuButton>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 min-w-2" />
 
         {/* Undo/Redo */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().undo()}
@@ -281,7 +281,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       </div>
 
       {/* Editor Content */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         <EditorContent editor={editor} />
       </div>
     </div>

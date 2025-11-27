@@ -1,13 +1,18 @@
 import { create } from 'zustand';
 
+// Check if we're on mobile
+const isMobile = () => window.innerWidth < 1024;
+
 const useUIStore = create((set) => ({
-  sidebarOpen: true,
+  sidebarOpen: !isMobile(), // Closed by default on mobile
+  isMobile: isMobile(),
   theme: localStorage.getItem('notty_theme') || 'dark',
   searchQuery: '',
   isSearchOpen: false,
 
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  setIsMobile: (mobile) => set({ isMobile: mobile }),
   
   setTheme: (theme) => {
     localStorage.setItem('notty_theme', theme);

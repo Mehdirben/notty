@@ -36,7 +36,10 @@ function App() {
   return (
     <Router>
       <Toaster
-        position="top-right"
+        position="top-center"
+        containerStyle={{
+          top: 20,
+        }}
         toastOptions={{
           duration: 3000,
           style: {
@@ -44,6 +47,9 @@ function App() {
             color: '#fff',
             borderRadius: '12px',
             border: '1px solid rgba(99, 102, 241, 0.2)',
+            padding: '12px 16px',
+            fontSize: '14px',
+            maxWidth: '90vw',
           },
           success: {
             iconTheme: {

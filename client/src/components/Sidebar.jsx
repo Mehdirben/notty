@@ -68,12 +68,16 @@ const Sidebar = () => {
       {/* Sidebar */}
       <motion.aside
         initial={false}
-        animate={{ width: sidebarOpen ? 280 : 72 }}
+        animate={{ 
+          width: sidebarOpen ? 280 : 72,
+          x: sidebarOpen ? 0 : (typeof window !== 'undefined' && window.innerWidth < 1024 ? -280 : 0)
+        }}
         transition={{ 
           duration: 0.3, 
           ease: [0.4, 0, 0.2, 1]
         }}
-        className="fixed left-0 top-0 h-full bg-white dark:bg-dark-900 border-r border-gray-200 dark:border-dark-800 z-50 flex flex-col"
+        className="fixed left-0 top-0 h-full bg-white dark:bg-dark-900 border-r border-gray-200 dark:border-dark-800 z-50 flex flex-col lg:translate-x-0 -translate-x-full data-[open=true]:translate-x-0"
+        data-open={sidebarOpen}
       >
         {/* Header */}
         <div className={`flex items-center h-16 ${sidebarOpen ? 'px-4 justify-between' : 'px-0 justify-center'}`}>

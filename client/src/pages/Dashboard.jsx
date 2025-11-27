@@ -58,17 +58,17 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 lg:mb-8"
         >
-          <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900 dark:text-white">
             Welcome back, <span className="gradient-text">{user?.name?.split(' ')[0]}</span>! 👋
           </h1>
-          <p className="text-gray-500 dark:text-dark-400">Here's an overview of your notes and notebooks.</p>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-dark-400">Here's an overview of your notes and notebooks.</p>
         </motion.div>
 
         {/* Stats */}
@@ -76,38 +76,38 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+          className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 lg:mb-8"
         >
-          <div className="p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-sm dark:shadow-none">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-primary-500/20 rounded-xl">
-                <BookOpen className="w-6 h-6 text-primary-500" />
+          <div className="p-3 sm:p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-xl sm:rounded-2xl shadow-sm dark:shadow-none">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-4 gap-2">
+              <div className="p-2 sm:p-3 bg-primary-500/20 rounded-lg sm:rounded-xl">
+                <BookOpen className="w-4 h-4 sm:w-6 sm:h-6 text-primary-500" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{notebooks.length}</p>
-                <p className="text-gray-500 dark:text-dark-400 text-sm">Notebooks</p>
-              </div>
-            </div>
-          </div>
-          <div className="p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-sm dark:shadow-none">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-purple-500/20 rounded-xl">
-                <FileText className="w-6 h-6 text-purple-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalNotes}</p>
-                <p className="text-gray-500 dark:text-dark-400 text-sm">Total Notes</p>
+              <div className="text-center sm:text-left">
+                <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">{notebooks.length}</p>
+                <p className="text-gray-500 dark:text-dark-400 text-xs sm:text-sm">Notebooks</p>
               </div>
             </div>
           </div>
-          <div className="p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-sm dark:shadow-none">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-yellow-500/20 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-yellow-500" />
+          <div className="p-3 sm:p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-xl sm:rounded-2xl shadow-sm dark:shadow-none">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-4 gap-2">
+              <div className="p-2 sm:p-3 bg-purple-500/20 rounded-lg sm:rounded-xl">
+                <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{favoriteNotes}</p>
-                <p className="text-gray-500 dark:text-dark-400 text-sm">Favorites</p>
+              <div className="text-center sm:text-left">
+                <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">{totalNotes}</p>
+                <p className="text-gray-500 dark:text-dark-400 text-xs sm:text-sm">Notes</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-3 sm:p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-xl sm:rounded-2xl shadow-sm dark:shadow-none">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-4 gap-2">
+              <div className="p-2 sm:p-3 bg-yellow-500/20 rounded-lg sm:rounded-xl">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-500" />
+              </div>
+              <div className="text-center sm:text-left">
+                <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">{favoriteNotes}</p>
+                <p className="text-gray-500 dark:text-dark-400 text-xs sm:text-sm">Favorites</p>
               </div>
             </div>
           </div>
@@ -118,21 +118,22 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-12"
+          className="mb-8 lg:mb-12"
         >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Your Notebooks</h2>
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Your Notebooks</h2>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl font-medium text-white hover:shadow-lg hover:shadow-primary-500/30 transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-primary-600 to-purple-600 rounded-lg sm:rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-primary-500/30 transition-all"
             >
               <Plus className="w-4 h-4" />
-              New Notebook
+              <span className="hidden sm:inline">New Notebook</span>
+              <span className="sm:hidden">New</span>
             </button>
           </div>
 
           {notebooks.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               {notebooks.map((notebook) => (
                 <NotebookCard
                   key={notebook._id}
@@ -146,16 +147,16 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 onClick={() => setIsCreateModalOpen(true)}
-                className="p-6 border-2 border-dashed border-gray-300 dark:border-dark-700 rounded-2xl hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-dark-800/30 transition-all flex flex-col items-center justify-center gap-3 min-h-[200px]"
+                className="p-4 sm:p-6 border-2 border-dashed border-gray-300 dark:border-dark-700 rounded-xl sm:rounded-2xl hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-dark-800/30 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 min-h-[160px] sm:min-h-[200px]"
               >
-                <div className="p-3 bg-gray-100 dark:bg-dark-800 rounded-xl">
-                  <Plus className="w-6 h-6 text-gray-400 dark:text-dark-400" />
+                <div className="p-2 sm:p-3 bg-gray-100 dark:bg-dark-800 rounded-lg sm:rounded-xl">
+                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-dark-400" />
                 </div>
-                <span className="text-gray-500 dark:text-dark-400 font-medium">Create Notebook</span>
+                <span className="text-sm sm:text-base text-gray-500 dark:text-dark-400 font-medium">Create Notebook</span>
               </motion.button>
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-8 sm:py-12">
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 dark:bg-dark-800 flex items-center justify-center">
                 <BookOpen className="w-8 h-8 text-gray-400 dark:text-dark-500" />
               </div>
@@ -178,10 +179,10 @@ const Dashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Recent Notes</h2>
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Recent Notes</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {recentNotes.map((note, index) => (
                 <NoteCard
                   key={note._id}
