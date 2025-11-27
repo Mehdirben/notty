@@ -142,18 +142,6 @@ const Dashboard = () => {
                   onArchive={handleArchiveNotebook}
                 />
               ))}
-              {/* Create New Card */}
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                onClick={() => setIsCreateModalOpen(true)}
-                className="p-4 sm:p-6 border-2 border-dashed border-gray-300 dark:border-dark-700 rounded-xl sm:rounded-2xl hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-dark-800/30 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 min-h-[160px] sm:min-h-[200px]"
-              >
-                <div className="p-2 sm:p-3 bg-gray-100 dark:bg-dark-800 rounded-lg sm:rounded-xl">
-                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-dark-400" />
-                </div>
-                <span className="text-sm sm:text-base text-gray-500 dark:text-dark-400 font-medium">Create Notebook</span>
-              </motion.button>
             </div>
           ) : (
             <div className="text-center py-8 sm:py-12">

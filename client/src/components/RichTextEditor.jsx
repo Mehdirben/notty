@@ -35,7 +35,7 @@ const MenuButton = ({ onClick, isActive, disabled, children, title }) => (
     onClick={onClick}
     disabled={disabled}
     title={title}
-    className={`p-2 rounded-lg transition-colors ${
+    className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${
       isActive 
         ? 'bg-primary-500/20 text-primary-500' 
         : 'text-gray-500 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-gray-900 dark:hover:text-white'
@@ -80,7 +80,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-invert max-w-none focus:outline-none min-h-[300px]',
+        class: 'prose prose-invert max-w-none focus:outline-none min-h-full h-full',
       },
     },
   });
@@ -134,9 +134,9 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
   }
 
   return (
-    <div className="border border-gray-200 dark:border-dark-700 rounded-xl overflow-hidden bg-white dark:bg-dark-800/50">
+    <div className="flex flex-col h-full">
       {/* Toolbar - Scrollable on mobile */}
-      <div className="flex items-center gap-1 p-2 border-b border-gray-200 dark:border-dark-700 bg-gray-50 dark:bg-dark-800 overflow-x-auto scrollbar-hide">
+      <div className="flex items-center gap-1 px-2 sm:px-4 py-2 border-b border-gray-200 dark:border-dark-800 bg-gray-50/80 dark:bg-dark-900/80 backdrop-blur-sm overflow-x-auto scrollbar-hide shrink-0">
         {/* Text Formatting */}
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton
@@ -281,8 +281,8 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       </div>
 
       {/* Editor Content */}
-      <div className="p-3 sm:p-4">
-        <EditorContent editor={editor} />
+      <div className="flex-1 overflow-y-auto pt-4 sm:pt-6">
+        <EditorContent editor={editor} className="h-full" />
       </div>
     </div>
   );

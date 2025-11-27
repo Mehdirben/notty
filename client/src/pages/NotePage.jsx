@@ -121,12 +121,12 @@ const NotePage = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen flex flex-col">
+      <div className="h-screen flex flex-col overflow-hidden">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 z-20 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-gray-200 dark:border-dark-800"
+          className="sticky top-0 z-20 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-gray-200 dark:border-dark-800 shrink-0"
         >
           <div className="flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3">
             {/* Left Side */}
@@ -173,7 +173,7 @@ const NotePage = () => {
               <button
                 onClick={handleManualSave}
                 disabled={!hasChanges || isSaving}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-dark-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-500 dark:text-dark-400"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-500 dark:text-dark-400"
                 title="Save (⌘S)"
               >
                 <Save className="w-4 h-4" />
@@ -182,7 +182,7 @@ const NotePage = () => {
               {/* Favorite */}
               <button
                 onClick={handleToggleFavorite}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${
                   currentNote.isFavorite 
                     ? 'bg-yellow-500/20 text-yellow-500' 
                     : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
@@ -194,7 +194,7 @@ const NotePage = () => {
               {/* Pin */}
               <button
                 onClick={handleTogglePin}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${
                   currentNote.isPinned 
                     ? 'bg-primary-500/20 text-primary-500' 
                     : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
@@ -206,7 +206,7 @@ const NotePage = () => {
               {/* Delete */}
               <button
                 onClick={handleDelete}
-                className="p-2 hover:bg-red-500/20 hover:text-red-500 rounded-lg transition-colors text-gray-500 dark:text-dark-400"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:bg-red-500/20 hover:text-red-500 rounded-lg transition-colors text-gray-500 dark:text-dark-400"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -219,42 +219,46 @@ const NotePage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="flex-1 p-4 sm:p-6 md:p-8 max-w-4xl mx-auto w-full"
+          className="flex-1 flex flex-col overflow-hidden"
         >
           {/* Title */}
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            placeholder="Untitled"
-            className="w-full text-2xl sm:text-3xl md:text-4xl font-bold bg-transparent border-none outline-none mb-4 sm:mb-6 placeholder:text-gray-400 dark:placeholder:text-dark-600 text-gray-900 dark:text-white"
-          />
+          <div className="px-3 sm:px-6 md:px-8 lg:px-12 pt-4 sm:pt-6 shrink-0">
+            <input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="Untitled"
+              className="w-full text-2xl sm:text-3xl md:text-4xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-dark-600 text-gray-900 dark:text-white"
+            />
 
-          {/* Tags */}
-          {currentNote.tags?.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {currentNote.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-100 dark:bg-dark-800 rounded-full text-sm text-gray-600 dark:text-dark-300"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
+            {/* Tags */}
+            {currentNote.tags?.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3 sm:mt-4">
+                {currentNote.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 dark:bg-dark-800 rounded-full text-sm text-gray-600 dark:text-dark-300"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Editor */}
-          <RichTextEditor
-            content={content}
-            onChange={handleContentChange}
-            placeholder="Start writing your note..."
-          />
+          <div className="flex-1 min-h-0 px-3 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-4">
+            <RichTextEditor
+              content={content}
+              onChange={handleContentChange}
+              placeholder="Start writing your note..."
+            />
+          </div>
 
-          {/* Metadata */}
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-dark-800 text-sm text-gray-500 dark:text-dark-500">
-            <p>Created: {new Date(currentNote.createdAt).toLocaleString()}</p>
-            <p>Last updated: {new Date(currentNote.updatedAt).toLocaleString()}</p>
+          {/* Metadata - Fixed at bottom above mobile nav */}
+          <div className="fixed bottom-20 lg:bottom-0 left-0 right-0 lg:left-auto lg:right-0 lg:relative px-3 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 border-t border-gray-200 dark:border-dark-800 bg-white/90 dark:bg-dark-950/90 backdrop-blur-sm flex items-center justify-between text-xs text-gray-500 dark:text-dark-500 z-30">
+            <span>Created: {new Date(currentNote.createdAt).toLocaleDateString()}</span>
+            <span>Edited: {new Date(currentNote.updatedAt).toLocaleDateString()}</span>
           </div>
         </motion.div>
       </div>

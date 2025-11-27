@@ -1,17 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Star, Search, Settings, Plus, Menu } from 'lucide-react';
+import { Home, Star, Search, Settings } from 'lucide-react';
 import useUIStore from '../store/uiStore';
 
 const MobileNav = () => {
   const location = useLocation();
-  const { setSearchOpen, toggleSidebar } = useUIStore();
+  const { setSearchOpen } = useUIStore();
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard' },
     { icon: Star, label: 'Favorites', path: '/favorites' },
     { icon: Search, label: 'Search', action: () => setSearchOpen(true) },
-    { icon: Menu, label: 'Menu', action: () => toggleSidebar() },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (
