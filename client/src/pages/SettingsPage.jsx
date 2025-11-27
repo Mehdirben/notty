@@ -1,20 +1,34 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, User, Moon, Sun, LogOut, Shield, Bell } from 'lucide-react';
+import { Settings, User, Moon, Sun, LogOut, Shield, Bell, Download, Smartphone, Share, Plus } from 'lucide-react';
 import Layout from '../components/Layout';
 import useAuthStore from '../store/authStore';
 import useUIStore from '../store/uiStore';
+import { usePWAInstall } from '../hooks/usePWAInstall';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const SettingsPage = () => {
   const { user, updateProfile, logout } = useAuthStore();
   const { theme, toggleTheme } = useUIStore();
+  const { isInstallable, isInstalled, installApp, showIOSInstall } = usePWAInstall();
   const navigate = useNavigate();
+  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
   
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleInstallApp = async () => {
+    if (showIOSInstall) {
+      setShowIOSInstructions(true);
+    } else if (isInstallable) {
+      const installed = await installApp();
+      if (installed) {
+        toast.success('App installed successfully!');
+      }
+    }
+  };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -152,6 +166,45 @@ const SettingsPage = () => {
           </div>
         </motion.div>
 
+        {/* Install App Section */}
+        {(isInstallable || showIOSInstall || isInstalled) && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="mb-8"
+          >
+            <div className="p-6 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-sm dark:shadow-none">
+              <div className="flex items-center gap-3 mb-6">
+                <Smartphone className="w-5 h-5 text-primary-500" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Install App</h2>
+              </div>
+
+              {isInstalled ? (
+                <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+                  <p className="font-medium text-green-600 dark:text-green-400">✓ App Installed</p>
+                  <p className="text-green-600/70 dark:text-green-400/70 text-sm">Notty is installed on your device</p>
+                </div>
+              ) : (
+                <button
+                  onClick={handleInstallApp}
+                  className="w-full p-4 bg-gradient-to-r from-primary-500/10 to-purple-500/10 border border-primary-500/20 rounded-xl text-left hover:from-primary-500/20 hover:to-purple-500/20 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-br from-primary-500 to-purple-500 rounded-lg">
+                      <Download className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">Install Notty</p>
+                      <p className="text-gray-500 dark:text-dark-400 text-sm">Add to your home screen for quick access</p>
+                    </div>
+                  </div>
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+
         {/* Security Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -193,6 +246,63 @@ const SettingsPage = () => {
             </button>
           </div>
         </motion.div>
+
+        {/* iOS Instructions Modal */}
+        {showIOSInstructions && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowIOSInstructions(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+                Install on iOS
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center">
+                    <Share className="w-5 h-5 text-primary-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                      1. Tap the Share button
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      In Safari's toolbar at the bottom
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-primary-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                      2. Tap "Add to Home Screen"
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Scroll down in the share menu
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowIOSInstructions(false)}
+                className="mt-6 w-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl"
+              >
+                Got it
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
       </div>
     </Layout>
   );
