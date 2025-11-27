@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
       <SearchModal />
       <main 
         className={`min-h-screen transition-all duration-300 ${
-          sidebarOpen ? 'ml-[280px]' : 'ml-[80px]'
+          sidebarOpen ? 'ml-[280px]' : 'ml-[72px]'
         }`}
       >
         {children}
