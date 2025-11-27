@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -84,6 +84,13 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       },
     },
   });
+
+  // Sync editor content when the content prop changes (e.g., when loading a note)
+  useEffect(() => {
+    if (editor && content !== undefined && editor.getHTML() !== content) {
+      editor.commands.setContent(content || '');
+    }
+  }, [content, editor]);
 
   const addImage = useCallback(async () => {
     const input = document.createElement('input');
