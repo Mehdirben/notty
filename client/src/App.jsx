@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from './store/authStore';
+import ScrollToTop from './components/ScrollToTop';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -35,6 +36,7 @@ const PublicRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Toaster
         position="top-center"
         containerStyle={{
