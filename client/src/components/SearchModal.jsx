@@ -1,0 +1,146 @@
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, X, FileText, BookOpen } from 'lucide-react';
+import useUIStore from '../store/uiStore';
+import useNoteStore from '../store/noteStore';
+
+const SearchModal = () => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const { isSearchOpen, setSearchOpen } = useUIStore();
+  const { notes, fetchNotes } = useNoteStore();
+  const navigate = useNavigate();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      fetchNotes();
+      inputRef.current?.focus();
+    }
+  }, [isSearchOpen, fetchNotes]);
+
+  useEffect(() => {
+    if (query.trim()) {
+      const filtered = notes.filter(
+        (note) =>
+          note.title.toLowerCase().includes(query.toLowerCase()) ||
+          note.content?.toLowerCase().includes(query.toLowerCase()) ||
+          note.tags?.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
+      );
+      setResults(filtered.slice(0, 10));
+    } else {
+      setResults([]);
+    }
+  }, [query, notes]);
+
+  const handleSelect = (note) => {
+    navigate(`/note/${note._id}`);
+    setSearchOpen(false);
+    setQuery('');
+  };
+
+  // Keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(!isSearchOpen);
+      }
+      if (e.key === 'Escape') {
+        setSearchOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSearchOpen, setSearchOpen]);
+
+  return (
+    <AnimatePresence>
+      {isSearchOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSearchOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+          />
+
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+            className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4"
+          >
+            <div className="bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl overflow-hidden">
+              {/* Search Input */}
+              <div className="flex items-center gap-3 px-4 py-4 border-b border-dark-700">
+                <Search className="w-5 h-5 text-dark-400" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search notes..."
+                  className="flex-1 bg-transparent outline-none text-lg"
+                />
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  className="p-1 hover:bg-dark-800 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-dark-400" />
+                </button>
+              </div>
+
+              {/* Results */}
+              <div className="max-h-96 overflow-y-auto">
+                {results.length > 0 ? (
+                  <div className="p-2">
+                    {results.map((note) => (
+                      <button
+                        key={note._id}
+                        onClick={() => handleSelect(note)}
+                        className="w-full flex items-start gap-3 p-3 hover:bg-dark-800 rounded-xl transition-colors text-left"
+                      >
+                        <div className="p-2 bg-dark-800 rounded-lg">
+                          <FileText className="w-4 h-4 text-primary-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{note.title}</p>
+                          <div className="flex items-center gap-2 text-sm text-dark-400">
+                            <BookOpen className="w-3 h-3" />
+                            <span className="truncate">{note.notebook?.title}</span>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : query.trim() ? (
+                  <div className="p-8 text-center text-dark-400">
+                    <p>No notes found for "{query}"</p>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-dark-400">
+                    <p>Start typing to search your notes</p>
+                    <p className="text-sm mt-2">
+                      <kbd className="px-2 py-1 bg-dark-800 rounded text-xs">⌘</kbd>
+                      {' + '}
+                      <kbd className="px-2 py-1 bg-dark-800 rounded text-xs">K</kbd>
+                      {' to open search'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default SearchModal;
