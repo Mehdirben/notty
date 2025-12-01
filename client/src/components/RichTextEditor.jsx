@@ -65,7 +65,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
         },
       }),
       Link.configure({
-        openOnClick: false,
+        openOnClick: true,
         HTMLAttributes: {
           class: 'text-primary-400 underline',
         },
