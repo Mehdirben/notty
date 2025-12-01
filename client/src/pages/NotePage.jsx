@@ -24,7 +24,7 @@ const NotePage = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   
-  const { currentNote, getNote, updateNote, deleteNote, toggleFavorite, togglePin, isSaving } = useNoteStore();
+  const { currentNote, getNote, updateNote, deleteNote, toggleFavorite, togglePin, isSaving, isLoading, error } = useNoteStore();
 
   useEffect(() => {
     if (id) {
@@ -108,6 +108,64 @@ const NotePage = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [title, content, hasChanges]);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || (!currentNote && !isLoading)) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="max-w-md w-full text-center">
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="w-8 h-8 text-red-500" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                {error?.includes('Not found') ? 'Note Not Found' : 'Access Denied'}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {error?.includes('Not found') 
+                  ? 'The note you\'re looking for doesn\'t exist or has been deleted.'
+                  : 'You don\'t have permission to access this note.'
+                }
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+              >
+                Go to Dashboard
+              </button>
+              <button
+                onClick={() => navigate(-1)}
+                className="px-6 py-2 bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-700 transition-colors"
+              >
+                Go Back
+              </button>
+            </div>
+            
+            {error && (
+              <div className="mt-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  Error: {error}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!currentNote) {
     return (
