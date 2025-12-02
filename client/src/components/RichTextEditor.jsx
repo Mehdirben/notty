@@ -11,6 +11,7 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { common, createLowlight } from 'lowlight';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { 
   Bold, 
   Italic, 
@@ -186,15 +187,25 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       const currentOrigin = window.location.origin;
       
       // Check if it's an internal link
-      if (url.startsWith(currentOrigin) || url.startsWith('/') || !url.startsWith('http')) {
+      if (url.startsWith(currentOrigin) || url.startsWith('/')) {
         // Internal link - navigate within the same tab
-        const pathname = url.startsWith(currentOrigin) 
-          ? url.replace(currentOrigin, '') 
+        const pathname = url.startsWith(currentOrigin)
+          ? url.replace(currentOrigin, '')
           : url;
         navigate(pathname);
-      } else {
+      } else if (url.startsWith('http://') || url.startsWith('https://')) {
         // External link - open in new tab
         window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        // Malformed URL (like "www.google.com" without protocol)
+        // Try to fix it by adding https://
+        const fixedUrl = url.startsWith('www.') ? `https://${url}` : url;
+        if (fixedUrl.startsWith('http')) {
+          window.open(fixedUrl, '_blank', 'noopener,noreferrer');
+        } else {
+          // If we can't fix it, show an error
+          toast.error('Invalid link format. Please use a complete URL (e.g., https://example.com)');
+        }
       }
     }
   }, [navigate]);
@@ -293,9 +304,35 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
 
     let finalUrl = linkUrl.trim();
     
-    // Add https:// for external links if not present
-    if (linkType === 'external' && !finalUrl.startsWith('http')) {
-      finalUrl = `https://${finalUrl}`;
+    // Validate and format URLs based on type
+    if (linkType === 'external') {
+      // Add https:// for external links if not present
+      if (!finalUrl.startsWith('http')) {
+        finalUrl = `https://${finalUrl}`;
+      }
+      
+      // Basic URL validation for external links
+      try {
+        new URL(finalUrl);
+      } catch (e) {
+        toast.error('Please enter a valid URL (e.g., https://example.com)');
+        return;
+      }
+    } else if (linkType === 'internal') {
+      // Validate internal note paths
+      if (!finalUrl.startsWith('/')) {
+        toast.error('Internal links must start with / (e.g., /note/123)');
+        return;
+      }
+      
+      // Check if it's a valid internal path format
+      const validInternalPaths = ['/note/', '/notebook/', '/dashboard', '/favorites'];
+      const isValidInternal = validInternalPaths.some(path => finalUrl.startsWith(path));
+      
+      if (!isValidInternal && finalUrl !== '/dashboard' && finalUrl !== '/favorites') {
+        toast.error('Invalid internal path. Use formats like /note/123 or /notebook/456');
+        return;
+      }
     }
 
     editor?.chain().focus().extendMarkRange('link').setLink({ href: finalUrl }).run();

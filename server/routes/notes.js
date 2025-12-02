@@ -57,7 +57,15 @@ router.get('/', async (req, res) => {
 // @access  Private
 router.get('/:id', async (req, res) => {
   try {
-    const note = await Note.findOne({ _id: req.params.id, user: req.user._id })
+    // Validate that the ID is a valid MongoDB ObjectId format
+    const { id } = req.params;
+    
+    // Check if id is a valid ObjectId format (24 character hex string)
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
+    
+    const note = await Note.findOne({ _id: id, user: req.user._id })
       .populate('notebook', 'title color icon');
     
     if (!note) {
@@ -67,6 +75,9 @@ router.get('/:id', async (req, res) => {
     res.json(note);
   } catch (error) {
     console.error(error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -76,7 +87,15 @@ router.get('/:id', async (req, res) => {
 // @access  Private
 router.get('/:id/xml', async (req, res) => {
   try {
-    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+    // Validate that the ID is a valid MongoDB ObjectId format
+    const { id } = req.params;
+    
+    // Check if id is a valid ObjectId format (24 character hex string)
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
+    
+    const note = await Note.findOne({ _id: id, user: req.user._id });
     
     if (!note) {
       return res.status(404).json({ message: 'Note not found' });
@@ -86,6 +105,9 @@ router.get('/:id/xml', async (req, res) => {
     res.send(note.contentXML);
   } catch (error) {
     console.error(error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -144,7 +166,15 @@ router.post('/', [
 // @access  Private
 router.put('/:id', async (req, res) => {
   try {
-    let note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+    // Validate that the ID is a valid MongoDB ObjectId format
+    const { id } = req.params;
+    
+    // Check if id is a valid ObjectId format (24 character hex string)
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
+    
+    let note = await Note.findOne({ _id: id, user: req.user._id });
 
     if (!note) {
       return res.status(404).json({ message: 'Note not found' });
@@ -200,7 +230,15 @@ router.put('/:id', async (req, res) => {
 // @access  Private
 router.delete('/:id', async (req, res) => {
   try {
-    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+    // Validate that the ID is a valid MongoDB ObjectId format
+    const { id } = req.params;
+    
+    // Check if id is a valid ObjectId format (24 character hex string)
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
+    
+    const note = await Note.findOne({ _id: id, user: req.user._id });
 
     if (!note) {
       return res.status(404).json({ message: 'Note not found' });
@@ -211,6 +249,9 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Note deleted' });
   } catch (error) {
     console.error(error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid note ID format' });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
