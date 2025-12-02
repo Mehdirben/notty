@@ -9,7 +9,8 @@ import {
   Trash2, 
   Clock,
   Save,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 import Layout from '../components/Layout';
 import RichTextEditor from '../components/RichTextEditor';
@@ -124,43 +125,52 @@ const NotePage = () => {
       <Layout>
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="max-w-md w-full text-center">
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trash2 className="w-8 h-8 text-red-500" />
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                <Search className="w-12 h-12 text-gray-400 dark:text-gray-500" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {error?.includes('Not found') ? 'Note Not Found' : 'Access Denied'}
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Note Not Found
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                {error?.includes('Not found') 
-                  ? 'The note you\'re looking for doesn\'t exist or has been deleted.'
-                  : 'You don\'t have permission to access this note.'
-                }
+              <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed max-w-sm mx-auto">
+                The note you're looking for doesn't exist or has been deleted. It might have been moved or the link could be broken.
               </p>
-            </div>
+            </motion.div>
             
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
               <button
                 onClick={() => navigate('/dashboard')}
-                className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+                className="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 Go to Dashboard
               </button>
               <button
                 onClick={() => navigate(-1)}
-                className="px-6 py-2 bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-700 transition-colors"
+                className="px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 font-medium"
               >
                 Go Back
               </button>
-            </div>
-            
-            {error && (
-              <div className="mt-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-sm text-red-600 dark:text-red-400">
-                  Error: {error}
-                </p>
-              </div>
-            )}
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mt-8 text-center"
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Need help? Try searching for your note or check your recent activity.
+              </p>
+            </motion.div>
           </div>
         </div>
       </Layout>
