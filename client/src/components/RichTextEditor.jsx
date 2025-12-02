@@ -30,7 +30,6 @@ import {
   FileText,
   X
 } from 'lucide-react';
-import api from '../api/axios';
 
 const lowlight = createLowlight(common);
 
@@ -172,22 +171,16 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       const file = e.target.files?.[0];
       if (!file) return;
 
-      const formData = new FormData();
-      formData.append('image', file);
-
-      try {
-        const { data } = await api.post('/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        editor?.chain().focus().setImage({ src: data.url }).run();
-      } catch (error) {
-        // Fallback to base64 if upload fails
-        const reader = new FileReader();
-        reader.onload = () => {
-          editor?.chain().focus().setImage({ src: reader.result }).run();
-        };
-        reader.readAsDataURL(file);
-      }
+      // Convert image directly to Base64 - no server upload
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result;
+        editor?.chain().focus().setImage({ src: base64String }).run();
+      };
+      reader.onerror = () => {
+        console.error('Error reading file');
+      };
+      reader.readAsDataURL(file);
     };
     
     input.click();
