@@ -8,6 +8,7 @@ import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { common, createLowlight } from 'lowlight';
+import { useNavigate } from 'react-router-dom';
 import { 
   Bold, 
   Italic, 
@@ -33,6 +34,44 @@ import api from '../api/axios';
 
 const lowlight = createLowlight(common);
 
+// Custom Link Extension with intelligent click handling
+const CustomLink = Link.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      target: {
+        default: null,
+      },
+    };
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'a',
+      HTMLAttributes,
+      0,
+    ];
+  },
+
+  addCommands() {
+    return {
+      ...this.parent?.(),
+      setLink:
+        (attributes) =>
+        ({ chain }) => {
+          return chain()
+            .setMark(this.name, attributes)
+            .run();
+        },
+    };
+  },
+}).configure({
+  openOnClick: false, // We'll handle clicks manually
+  HTMLAttributes: {
+    class: 'text-primary-400 underline cursor-pointer',
+  },
+});
+
 const MenuButton = ({ onClick, isActive, disabled, children, title }) => (
   <button
     onClick={onClick}
@@ -52,6 +91,30 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkType, setLinkType] = useState('external'); // 'external' or 'internal'
+  const navigate = useNavigate();
+
+  // Handle link clicks intelligently
+  const handleLinkClick = useCallback((event) => {
+    const target = event.target;
+    if (target.tagName === 'A' && target.href) {
+      event.preventDefault();
+      
+      const url = target.href;
+      const currentOrigin = window.location.origin;
+      
+      // Check if it's an internal link
+      if (url.startsWith(currentOrigin) || url.startsWith('/') || !url.startsWith('http')) {
+        // Internal link - navigate within the same tab
+        const pathname = url.startsWith(currentOrigin) 
+          ? url.replace(currentOrigin, '') 
+          : url;
+        navigate(pathname);
+      } else {
+        // External link - open in new tab
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    }
+  }, [navigate]);
 
   const editor = useEditor({
     extensions: [
@@ -71,12 +134,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
           class: 'rounded-lg max-w-full',
         },
       }),
-      Link.configure({
-        openOnClick: true,
-        HTMLAttributes: {
-          class: 'text-primary-400 underline',
-        },
-      }),
+      CustomLink,
       CodeBlockLowlight.configure({
         lowlight,
       }),
@@ -88,6 +146,12 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
     editorProps: {
       attributes: {
         class: 'prose prose-invert max-w-none focus:outline-none min-h-full h-full',
+      },
+      handleDOMEvents: {
+        click: (view, event) => {
+          handleLinkClick(event);
+          return false; // Don't prevent default here, let our handler decide
+        },
       },
     },
   });
