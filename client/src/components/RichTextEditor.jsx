@@ -7,6 +7,8 @@ import TaskItem from '@tiptap/extension-task-item';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { Node, mergeAttributes } from '@tiptap/core';
+import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { common, createLowlight } from 'lowlight';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -28,7 +30,8 @@ import {
   Code2,
   ExternalLink,
   FileText,
-  X
+  X,
+  Youtube
 } from 'lucide-react';
 
 const lowlight = createLowlight(common);
@@ -71,6 +74,85 @@ const CustomLink = Link.extend({
   },
 });
 
+// YouTube Component for React Node View
+const YouTubeComponent = ({ node, updateAttributes }) => {
+  const { videoId, width, height } = node.attrs;
+  
+  return (
+    <NodeViewWrapper className="youtube-wrapper my-4">
+      <div className="relative">
+        <iframe
+          width={width || 560}
+          height={height || 315}
+          src={`https://www.youtube.com/embed/${videoId}`}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="rounded-lg shadow-lg"
+          style={{ maxWidth: '100%' }}
+        />
+      </div>
+    </NodeViewWrapper>
+  );
+};
+
+// YouTube Extension for TipTap
+const YouTube = Node.create({
+  name: 'youtube',
+
+  group: 'block',
+
+  atom: true,
+
+  addAttributes() {
+    return {
+      videoId: {
+        default: null,
+      },
+      width: {
+        default: 560,
+      },
+      height: {
+        default: 315,
+      },
+    };
+  },
+
+  parseHTML() {
+    return [
+      {
+        tag: 'div[data-youtube-video]',
+      },
+    ];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-youtube-video': '' })];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(YouTubeComponent);
+  },
+
+  addCommands() {
+    return {
+      setYouTube: (options) => ({ commands }) => {
+        return commands.insertContent({
+          type: this.name,
+          attrs: options,
+        });
+      },
+    };
+  },
+});
+
+// Function to extract YouTube video ID from URL
+const extractYouTubeId = (url) => {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[7].length === 11) ? match[7] : null;
+};
+
 const MenuButton = ({ onClick, isActive, disabled, children, title }) => (
   <button
     onClick={onClick}
@@ -90,6 +172,8 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkType, setLinkType] = useState('external'); // 'external' or 'internal'
+  const [showYouTubeModal, setShowYouTubeModal] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState('');
   const navigate = useNavigate();
 
   // Handle link clicks intelligently
@@ -137,6 +221,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       CodeBlockLowlight.configure({
         lowlight,
       }),
+      YouTube,
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -223,6 +308,28 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
     setShowLinkModal(false);
     setLinkUrl('');
   }, [editor]);
+
+  const addYouTube = useCallback(() => {
+    setYoutubeUrl('');
+    setShowYouTubeModal(true);
+  }, []);
+
+  const handleYouTubeSubmit = useCallback(() => {
+    if (!youtubeUrl.trim()) {
+      setShowYouTubeModal(false);
+      return;
+    }
+
+    const videoId = extractYouTubeId(youtubeUrl.trim());
+    if (!videoId) {
+      alert('Invalid YouTube URL. Please enter a valid YouTube video URL.');
+      return;
+    }
+
+    editor?.chain().focus().setYouTube({ videoId }).run();
+    setShowYouTubeModal(false);
+    setYoutubeUrl('');
+  }, [editor, youtubeUrl]);
 
   if (!editor) {
     return null;
@@ -320,6 +427,63 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
                 </button>
                 <button
                   onClick={() => setShowLinkModal(false)}
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* YouTube Modal */}
+      {showYouTubeModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-800 rounded-lg shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add YouTube Video</h3>
+              <button
+                onClick={() => setShowYouTubeModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-4">
+              {/* URL Input */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  YouTube URL
+                </label>
+                <input
+                  type="text"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-700 dark:text-white"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleYouTubeSubmit();
+                    }
+                  }}
+                />
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Paste any YouTube video URL (youtube.com, youtu.be, etc.)
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleYouTubeSubmit}
+                  className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                >
+                  Add Video
+                </button>
+                <button
+                  onClick={() => setShowYouTubeModal(false)}
                   className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
                 >
                   Cancel
@@ -444,6 +608,9 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <MenuButton onClick={addImage} title="Add Image">
             <ImageIcon className="w-4 h-4" />
+          </MenuButton>
+          <MenuButton onClick={addYouTube} title="Add YouTube Video">
+            <Youtube className="w-4 h-4" />
           </MenuButton>
           <MenuButton
             onClick={setLink}
