@@ -7,7 +7,7 @@
   
   <br />
   
-  **[🚀 Deploy on Coolify](./COOLIFY_DEPLOYMENT.md)** | **[📖 Documentation](#-getting-started)**
+  **[🚀 Deploy on Coolify](./COOLIFY_DEPLOYMENT.md)** | **[📖 Documentation](#-getting-started)** | **[📄 Full Report](./REPORT.md)**
 </div>
 
 ---
