@@ -204,10 +204,6 @@ Each notebook can have:
 
 Toggle between dark and light mode in Settings or sidebar.
 
-## 📄 License
-
-MIT License - feel free to use this project for learning or production!
-
 ## 🙏 Acknowledgments
 
 - [TipTap](https://tiptap.dev/) - Amazing rich text editor
