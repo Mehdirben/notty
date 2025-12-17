@@ -217,9 +217,14 @@ html.dark .ProseMirror h3 {
   line-height: 1.7;
 }
 
-.ProseMirror ul,
+.ProseMirror ul {
+  padding-left: 1.5em;
+  list-style-type: disc;
+}
+
 .ProseMirror ol {
   padding-left: 1.5em;
+  list-style-type: decimal;
 }
 
 .ProseMirror li {
