@@ -36,6 +36,7 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - React 18
 - Vite
 - TailwindCSS
@@ -46,6 +47,7 @@
 - Axios
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB with Mongoose
@@ -57,22 +59,26 @@
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - MongoDB (local or Atlas)
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    cd notty_react
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm run install:all
    ```
+
    Or install separately:
+
    ```bash
    npm install
    cd server && npm install
@@ -80,8 +86,9 @@
    ```
 
 3. **Configure environment variables**
-   
+
    Edit `server/.env`:
+
    ```env
    PORT=5000
    MONGODB_URI=mongodb://localhost:27017/notty
@@ -90,18 +97,21 @@
    ```
 
 4. **Start MongoDB**
+
    ```bash
    # If using local MongoDB
    mongod
    ```
 
 5. **Run the application**
+
    ```bash
    # From root directory - runs both frontend and backend
    npm run dev
    ```
-   
+
    Or run separately:
+
    ```bash
    # Terminal 1 - Backend
    npm run server
@@ -111,12 +121,12 @@
    ```
 
 6. **Open the app**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
+   - Frontend: <http://localhost:3000>
+   - Backend API: <http://localhost:5000>
 
 ## 📁 Project Structure
 
-```
+```text
 notty_react/
 ├── client/                 # React frontend
 │   ├── public/            # Static assets
@@ -145,12 +155,14 @@ notty_react/
 ## 🔌 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 - `GET /api/auth/me` - Get current user
 - `PUT /api/auth/profile` - Update profile
 
 ### Notebooks
+
 - `GET /api/notebooks` - Get all notebooks
 - `GET /api/notebooks/:id` - Get single notebook
 - `POST /api/notebooks` - Create notebook
@@ -158,6 +170,7 @@ notty_react/
 - `DELETE /api/notebooks/:id` - Delete notebook
 
 ### Notes
+
 - `GET /api/notes` - Get all notes (with filters)
 - `GET /api/notes/:id` - Get single note
 - `GET /api/notes/:id/xml` - Get note as XML
@@ -167,6 +180,7 @@ notty_react/
 - `POST /api/notes/import-xml` - Import note from XML
 
 ### Upload
+
 - `POST /api/upload` - Upload image
 
 ## ⌨️ Keyboard Shortcuts
@@ -180,11 +194,14 @@ notty_react/
 ## 🎨 Customization
 
 ### Notebook Colors & Icons
+
 Each notebook can have:
+
 - Custom emoji icon (📓, 💼, 💡, etc.)
 - Custom color accent
 
 ### Theme
+
 Toggle between dark and light mode in Settings or sidebar.
 
 ## 📄 License
