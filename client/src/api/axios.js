@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 // Use environment variable for API URL, fallback to /api for local development
 // If VITE_API_URL is set (production), append /api to it
@@ -31,9 +32,21 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const isExpired = error.response?.data?.expired;
+      const message = error.response?.data?.message || 'Session expired';
+
+      // Clear auth data
       localStorage.removeItem('notty_token');
       localStorage.removeItem('notty_user');
-      window.location.href = '/login';
+
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login')) {
+        // Show toast and redirect after a short delay so user can see the message
+        toast.error(isExpired ? 'Session expired. Please log in again.' : message);
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1500);
+      }
     }
     return Promise.reject(error);
   }

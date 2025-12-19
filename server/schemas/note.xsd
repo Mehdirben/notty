@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  
+  <!-- Root element: note -->
+  <xs:element name="note" type="NoteType"/>
+  
+  <!-- NoteType definition -->
+  <xs:complexType name="NoteType">
+    <xs:all>
+      <!-- Title is required -->
+      <xs:element name="title" type="xs:string" minOccurs="1"/>
+      
+      <!-- Content is required (can be empty string) -->
+      <xs:element name="content" type="xs:string" minOccurs="1"/>
+      
+      <!-- Timestamps are optional -->
+      <xs:element name="createdAt" type="xs:string" minOccurs="0"/>
+      <xs:element name="updatedAt" type="xs:string" minOccurs="0"/>
+      
+      <!-- Tags are optional -->
+      <xs:element name="tags" type="TagsType" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+  
+  <!-- TagsType definition for list of tags -->
+  <xs:complexType name="TagsType">
+    <xs:sequence>
+      <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+</xs:schema>

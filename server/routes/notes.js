@@ -4,6 +4,7 @@ import xml2js from 'xml2js';
 import Note from '../models/Note.js';
 import Notebook from '../models/Notebook.js';
 import { protect } from '../middleware/auth.js';
+import { validateXML, getSchemaContent } from '../utils/xmlValidator.js';
 
 const router = express.Router();
 
@@ -20,23 +21,23 @@ const xmlParser = new xml2js.Parser();
 router.get('/', async (req, res) => {
   try {
     const { notebook, search, favorite, archived } = req.query;
-    
+
     let query = { user: req.user._id };
-    
+
     if (notebook) {
       query.notebook = notebook;
     }
-    
+
     if (favorite === 'true') {
       query.isFavorite = true;
     }
-    
+
     if (archived === 'true') {
       query.isArchived = true;
     } else {
       query.isArchived = false;
     }
-    
+
     if (search) {
       query.$text = { $search: search };
     }
@@ -59,15 +60,15 @@ router.get('/:id', async (req, res) => {
   try {
     // Validate that the ID is a valid MongoDB ObjectId format
     const { id } = req.params;
-    
+
     // Check if id is a valid ObjectId format (24 character hex string)
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
-    
+
     const note = await Note.findOne({ _id: id, user: req.user._id })
       .populate('notebook', 'title color icon');
-    
+
     if (!note) {
       return res.status(404).json({ message: 'Note not found' });
     }
@@ -89,14 +90,14 @@ router.get('/:id/xml', async (req, res) => {
   try {
     // Validate that the ID is a valid MongoDB ObjectId format
     const { id } = req.params;
-    
+
     // Check if id is a valid ObjectId format (24 character hex string)
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
-    
+
     const note = await Note.findOne({ _id: id, user: req.user._id });
-    
+
     if (!note) {
       return res.status(404).json({ message: 'Note not found' });
     }
@@ -109,6 +110,21 @@ router.get('/:id/xml', async (req, res) => {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   GET /api/notes/schema
+// @desc    Get the XSD schema for note XML
+// @access  Public (schema is documentation)
+router.get('/schema', (req, res) => {
+  try {
+    const schemaContent = getSchemaContent();
+    res.set('Content-Type', 'application/xml');
+    res.set('Content-Disposition', 'attachment; filename="note.xsd"');
+    res.send(schemaContent);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve schema' });
   }
 });
 
@@ -141,6 +157,15 @@ router.post('/', [
       tags: tags || []
     });
 
+    // Validate XML against XSD schema
+    const validation = validateXML(xmlContent);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        message: 'Generated XML failed XSD validation',
+        errors: validation.errors
+      });
+    }
+
     const note = await Note.create({
       title,
       content,
@@ -168,12 +193,12 @@ router.put('/:id', async (req, res) => {
   try {
     // Validate that the ID is a valid MongoDB ObjectId format
     const { id } = req.params;
-    
+
     // Check if id is a valid ObjectId format (24 character hex string)
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
-    
+
     let note = await Note.findOne({ _id: id, user: req.user._id });
 
     if (!note) {
@@ -199,6 +224,15 @@ router.put('/:id', async (req, res) => {
         updatedAt: new Date().toISOString(),
         tags: tags || note.tags
       });
+
+      // Validate XML against XSD schema
+      const validation = validateXML(xmlContent);
+      if (!validation.isValid) {
+        return res.status(400).json({
+          message: 'Generated XML failed XSD validation',
+          errors: validation.errors
+        });
+      }
     }
 
     note = await Note.findByIdAndUpdate(
@@ -232,12 +266,12 @@ router.delete('/:id', async (req, res) => {
   try {
     // Validate that the ID is a valid MongoDB ObjectId format
     const { id } = req.params;
-    
+
     // Check if id is a valid ObjectId format (24 character hex string)
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
-    
+
     const note = await Note.findOne({ _id: id, user: req.user._id });
 
     if (!note) {
@@ -263,6 +297,15 @@ router.post('/import-xml', async (req, res) => {
   try {
     const { xml, notebook } = req.body;
 
+    // Validate XML against XSD schema first
+    const validation = validateXML(xml);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        message: 'XML failed XSD validation',
+        errors: validation.errors
+      });
+    }
+
     // Verify notebook belongs to user
     const notebookExists = await Notebook.findOne({ _id: notebook, user: req.user._id });
     if (!notebookExists) {
@@ -271,7 +314,7 @@ router.post('/import-xml', async (req, res) => {
 
     // Parse XML
     const result = await xmlParser.parseStringPromise(xml);
-    
+
     const note = await Note.create({
       title: result.note?.title?.[0] || 'Imported Note',
       content: result.note?.content?.[0] || '',
