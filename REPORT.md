@@ -1,16 +1,14 @@
 # Notty - Modern Note-Taking Platform
 
-<div align="center">
-  <h2>Technical Project Report</h2>
-  <p><em>Your Ideas, Beautifully Organized</em></p>
-  
-  | Aspect | Details |
-  |--------|---------|
-  | **Technologies** | React, Node.js, Express, MongoDB |
-  | **Architecture** | Full-Stack with Docker |
-  | **Deployment** | Coolify / Docker Compose |
+## Technical Project Report
 
-</div>
+> Your Ideas, Beautifully Organized
+
+| Aspect | Details |
+|--------|---------|
+| **Technologies** | React, Node.js, Express, MongoDB |
+| **Architecture** | Full-Stack with Docker |
+| **Deployment** | Coolify / Docker Compose |
 
 ---
 
@@ -41,7 +39,7 @@
 
 ---
 
-# Part I: Cahier de Charge
+## Part I: Cahier de Charge
 
 ## Introduction
 
@@ -152,7 +150,7 @@ The editor uses **TipTap**, a headless, framework-agnostic rich text editor buil
 
 ---
 
-# Part II: XML XSD / Conception
+## Part II: XML XSD / Conception
 
 ## Introduction to XML
 
@@ -215,7 +213,7 @@ The decision to implement XML/XSD in Notty was driven by several important consi
 
 ### Data Flow
 
-```
+```text
 ┌─────────────────┐       JSON        ┌─────────────────┐
 │   Note Editor   │ ───────────────▶  │  MongoDB Store  │
 │    (TipTap)     │                   │   (content)     │
@@ -524,7 +522,7 @@ NoteSchema.pre('save', function(next) {
 
 ---
 
-# Part III: Technologies
+## Part III: Technologies
 
 ## Technology Selection Philosophy
 
@@ -542,7 +540,7 @@ When selecting technologies for Notty, we followed these principles:
 
 The application follows a classic **three-tier architecture**, separating concerns into distinct layers:
 
-```
+```text
 ┌─────────────┐       REST API       ┌─────────────┐      Mongoose      ┌─────────────┐
 │  Frontend   │  ─────────────────▶  │   Backend   │ ─────────────────▶ │  MongoDB    │
 │   React     │                      │  Express.js │                    │  Database   │
@@ -788,7 +786,7 @@ The application follows a classic **three-tier architecture**, separating concer
 
 ## Project Structure
 
-```
+```text
 notty_react/
 ├── client/                 # React Frontend
 │   ├── src/
@@ -811,7 +809,7 @@ notty_react/
 
 ---
 
-# Part IV: Application
+## Part IV: Application
 
 ## REST API
 
