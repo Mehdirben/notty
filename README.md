@@ -31,7 +31,6 @@
 - 🌙 **Dark/Light Mode** - Beautiful dark theme by default
 - 💾 **Auto-save** - Notes are automatically saved as you type
 - 📱 **Responsive Design** - Works on desktop and mobile
-- 🗃️ **XML Support** - Notes can be exported/imported as XML
 
 ## 🛠️ Tech Stack
 
