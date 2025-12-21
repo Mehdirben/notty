@@ -26,7 +26,15 @@ const useNoteStore = create((set, get) => ({
       set({ currentNote: data, isLoading: false });
       return data;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch note', isLoading: false });
+      let errorMessage = 'Failed to fetch note';
+      if (error.response?.status === 400 && error.response?.data?.message?.includes('Invalid note ID format')) {
+        errorMessage = 'Invalid note link. The note ID format is incorrect.';
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Note not found. It may have been deleted or the link is incorrect.';
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      set({ error: errorMessage, isLoading: false });
       return null;
     }
   },

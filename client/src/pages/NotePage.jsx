@@ -9,7 +9,8 @@ import {
   Trash2, 
   Clock,
   Save,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 import Layout from '../components/Layout';
 import RichTextEditor from '../components/RichTextEditor';
@@ -24,7 +25,7 @@ const NotePage = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   
-  const { currentNote, getNote, updateNote, deleteNote, toggleFavorite, togglePin, isSaving } = useNoteStore();
+  const { currentNote, getNote, updateNote, deleteNote, toggleFavorite, togglePin, isSaving, isLoading, error } = useNoteStore();
 
   useEffect(() => {
     if (id) {
@@ -108,6 +109,73 @@ const NotePage = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [title, content, hasChanges]);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || (!currentNote && !isLoading)) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+          <div className="max-w-lg w-full text-center">
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 sm:mb-8 lg:mb-10"
+            >
+              <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 lg:mb-8 shadow-xl lg:shadow-2xl">
+                <Search className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 lg:mb-6 px-2">
+                Note Not Found
+              </h1>
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 lg:mb-10 leading-relaxed max-w-md mx-auto px-4 sm:px-6">
+                The note you're looking for doesn't exist or has been deleted. It might have been moved or the link could be broken.
+              </p>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
+            >
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-base sm:text-lg"
+              >
+                Go to Dashboard
+              </button>
+              <button
+                onClick={() => navigate(-1)}
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 font-medium text-base sm:text-lg"
+              >
+                Go Back
+              </button>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mt-6 sm:mt-8 text-center px-4 sm:px-6"
+            >
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+                Need help? Try searching for your note or check your recent activity.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!currentNote) {
     return (
