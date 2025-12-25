@@ -156,7 +156,7 @@ const SettingsPage = () => {
                   }`}
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${theme === 'dark' ? 'translate-x-5' : 'translate-x-0'
+                  className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-all duration-200 ease-in-out ${theme === 'dark' ? 'left-[22px]' : 'left-0.5'
                     }`}
                 />
               </button>

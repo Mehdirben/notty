@@ -1,10 +1,35 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const NotebookCard = ({ notebook, onEdit, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showMenu &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showMenu]);
 
   return (
     <motion.div
@@ -53,45 +78,43 @@ const NotebookCard = ({ notebook, onEdit, onDelete }) => {
       {/* Menu Button */}
       <div className="absolute top-4 right-4">
         <button
+          ref={buttonRef}
           onClick={(e) => {
             e.preventDefault();
             setShowMenu(!showMenu);
           }}
-          className="p-2 bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg transition-all flex items-center justify-center"
+          className="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg transition-all"
         >
           <MoreHorizontal className="w-4 h-4 text-gray-500 dark:text-white" />
         </button>
 
         {/* Dropdown Menu */}
         {showMenu && (
-          <>
-            <div
-              className="fixed inset-0 z-10"
-              onClick={() => setShowMenu(false)}
-            />
-            <div className="absolute right-0 top-12 w-48 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden">
-              <button
-                onClick={() => {
-                  onEdit?.(notebook);
-                  setShowMenu(false);
-                }}
-                className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
-              >
-                <Edit2 className="w-4 h-4 text-gray-400 dark:text-dark-400" />
-                <span>Edit</span>
-              </button>
-              <button
-                onClick={() => {
-                  onDelete?.(notebook);
-                  setShowMenu(false);
-                }}
-                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-500 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
-              </button>
-            </div>
-          </>
+          <div
+            ref={menuRef}
+            className="absolute right-0 top-12 w-48 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden"
+          >
+            <button
+              onClick={() => {
+                onEdit?.(notebook);
+                setShowMenu(false);
+              }}
+              className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
+            >
+              <Edit2 className="w-4 h-4 text-gray-400 dark:text-dark-400" />
+              <span>Edit</span>
+            </button>
+            <button
+              onClick={() => {
+                onDelete?.(notebook);
+                setShowMenu(false);
+              }}
+              className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-500 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Delete</span>
+            </button>
+          </div>
         )}
       </div>
     </motion.div>
@@ -99,3 +122,4 @@ const NotebookCard = ({ notebook, onEdit, onDelete }) => {
 };
 
 export default NotebookCard;
+

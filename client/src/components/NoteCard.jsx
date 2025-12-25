@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, Pin, MoreHorizontal, Edit2, Trash2, Archive, Copy } from 'lucide-react';
-import { useState } from 'react';
+import { Star, Pin, MoreHorizontal, Trash2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 
 const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   // Strip HTML tags for preview
   const getPreviewText = (html) => {
@@ -13,6 +15,29 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
     const text = div.textContent || div.innerText || '';
     return text.slice(0, 150) + (text.length > 150 ? '...' : '');
   };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showMenu &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target)
+      ) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showMenu]);
 
   return (
     <motion.div
@@ -75,19 +100,19 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
       </Link>
 
       {/* Quick Actions */}
-      <div className="absolute top-3 right-3 flex items-center gap-1.5">
+      <div className="absolute top-3 right-3 flex items-center gap-1">
         <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             onToggleFavorite?.(note._id);
           }}
-          className={`p-1.5 rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isFavorite
-            ? 'bg-yellow-500/20 text-yellow-500 shadow-sm shadow-yellow-500/20'
-            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-yellow-500 shadow-sm'
+          className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isFavorite
+            ? 'bg-yellow-500/20 text-yellow-500'
+            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-yellow-500'
             }`}
         >
-          <Star className={`w-3.5 h-3.5 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
+          <Star className={`w-4 h-4 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
         </button>
         <button
           onClick={(e) => {
@@ -95,64 +120,56 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.stopPropagation();
             onTogglePin?.(note._id);
           }}
-          className={`p-1.5 rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isPinned
-            ? 'bg-primary-500/20 text-primary-500 shadow-sm shadow-primary-500/20'
-            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-primary-500 shadow-sm'
+          className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isPinned
+            ? 'bg-primary-500/20 text-primary-500'
+            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-primary-500'
             }`}
         >
-          <Pin className="w-3.5 h-3.5" />
+          <Pin className="w-4 h-4" />
         </button>
         <button
+          ref={menuButtonRef}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             setShowMenu(!showMenu);
           }}
-          className={`p-1.5 rounded-lg backdrop-blur-sm transition-all duration-200 shadow-sm ${showMenu
+          className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${showMenu
             ? 'bg-primary-500/20 text-primary-500'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400'
             }`}
         >
-          <MoreHorizontal className="w-3.5 h-3.5" />
+          <MoreHorizontal className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Dropdown Menu - Outside the hover group */}
+      {/* Dropdown Menu */}
       {showMenu && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
+        <motion.div
+          ref={menuRef}
+          initial={{ opacity: 0, scale: 0.95, y: -4 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -4 }}
+          transition={{ duration: 0.15 }}
+          className="absolute right-3 top-12 w-44 bg-white/95 dark:bg-dark-800/95 backdrop-blur-xl border border-gray-200/80 dark:border-dark-600/50 rounded-xl shadow-xl shadow-black/10 dark:shadow-black/30 z-50 overflow-hidden"
+        >
+          <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              onDelete?.(note._id);
               setShowMenu(false);
             }}
-            onMouseOver={(e) => e.stopPropagation()}
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-3 top-12 w-44 bg-white/95 dark:bg-dark-800/95 backdrop-blur-xl border border-gray-200/80 dark:border-dark-600/50 rounded-xl shadow-xl shadow-black/10 dark:shadow-black/30 z-50 overflow-hidden"
+            className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-500 transition-colors text-sm font-medium"
           >
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onDelete?.(note._id);
-                setShowMenu(false);
-              }}
-              className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-500 transition-colors text-sm font-medium"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>Delete Note</span>
-            </button>
-          </motion.div>
-        </>
+            <Trash2 className="w-4 h-4" />
+            <span>Delete Note</span>
+          </button>
+        </motion.div>
       )}
     </motion.div>
   );
 };
 
 export default NoteCard;
+
