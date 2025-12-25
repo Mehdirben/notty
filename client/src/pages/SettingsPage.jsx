@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, User, Moon, Sun, LogOut, Shield, Bell, Download, Smartphone, Share, Plus } from 'lucide-react';
+import { Settings, User, Moon, Sun, LogOut, Shield, Bell, Download, Smartphone, Share, Plus, Lock, Eye, EyeOff } from 'lucide-react';
 import Layout from '../components/Layout';
 import useAuthStore from '../store/authStore';
 import useUIStore from '../store/uiStore';
@@ -18,6 +18,14 @@ const SettingsPage = () => {
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Password change state
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
   const handleInstallApp = async () => {
     if (showIOSInstall) {
@@ -48,6 +56,35 @@ const SettingsPage = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    setIsPasswordLoading(true);
+
+    const result = await updateProfile({ password: newPassword });
+
+    if (result.success) {
+      toast.success('Password updated successfully!');
+      setShowPasswordModal(false);
+      setNewPassword('');
+      setConfirmPassword('');
+    } else {
+      toast.error(result.error);
+    }
+
+    setIsPasswordLoading(false);
   };
 
   return (
@@ -216,7 +253,10 @@ const SettingsPage = () => {
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Security</h2>
             </div>
 
-            <button className="w-full p-4 bg-gray-50 dark:bg-dark-900 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors">
+            <button
+              onClick={() => setShowPasswordModal(true)}
+              className="w-full p-4 bg-gray-50 dark:bg-dark-900 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors"
+            >
               <p className="font-medium text-gray-900 dark:text-white">Change Password</p>
               <p className="text-gray-500 dark:text-dark-400 text-sm">Update your password to keep your account secure</p>
             </button>
@@ -316,6 +356,111 @@ const SettingsPage = () => {
               >
                 Got it
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Change Password Modal */}
+        {showPasswordModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowPasswordModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-dark-800 rounded-2xl p-6 max-w-sm w-full shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-primary-500/10 rounded-lg">
+                  <Lock className="w-5 h-5 text-primary-500" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Change Password
+                </h3>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                {/* New Password */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
+                    New Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showNewPassword ? 'text' : 'password'}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Enter new password"
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 transition-colors text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-dark-500"
+                      minLength={6}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                      {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-xl focus:outline-none focus:border-primary-500 transition-colors text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-dark-500"
+                      minLength={6}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-500 dark:text-dark-400">
+                  Password must be at least 6 characters long
+                </p>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPasswordModal(false);
+                      setNewPassword('');
+                      setConfirmPassword('');
+                    }}
+                    className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-xl hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isPasswordLoading}
+                    className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all disabled:opacity-50"
+                  >
+                    {isPasswordLoading ? 'Updating...' : 'Update Password'}
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </motion.div>
         )}
