@@ -33,8 +33,6 @@ const NotebookCard = ({ notebook, onEdit, onDelete }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       whileTap={{ scale: 0.98 }}
       className="notebook-card relative group"

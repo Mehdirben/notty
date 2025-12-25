@@ -41,9 +41,6 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
       whileTap={{ scale: 0.98 }}
       className={`note-item relative group ${showMenu ? 'menu-open' : ''}`}
     >

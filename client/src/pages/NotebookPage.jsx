@@ -13,7 +13,7 @@ const NotebookPage = () => {
   const navigate = useNavigate();
   const [isCreating, setIsCreating] = useState(false);
   const [newNoteTitle, setNewNoteTitle] = useState('');
-  
+
   const { currentNotebook, getNotebook, deleteNotebook } = useNotebookStore();
   const { notes, fetchNotes, createNote, toggleFavorite, togglePin, deleteNote, isLoading } = useNoteStore();
 
@@ -26,7 +26,7 @@ const NotebookPage = () => {
 
   const handleCreateNote = async (e) => {
     e.preventDefault();
-    
+
     if (!newNoteTitle.trim()) {
       toast.error('Please enter a title');
       return;
@@ -88,14 +88,14 @@ const NotebookPage = () => {
     <Layout>
       <div className="min-h-screen">
         {/* Header */}
-        <div 
+        <div
           className="relative h-40 sm:h-48 md:h-56"
-          style={{ 
-            background: `linear-gradient(135deg, ${currentNotebook.color}40, ${currentNotebook.color}10)` 
+          style={{
+            background: `linear-gradient(135deg, ${currentNotebook.color}40, ${currentNotebook.color}10)`
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50 dark:to-dark-950" />
-          
+
           <div className="relative z-10 h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-4 sm:pb-6">
             {/* Back Button */}
             <button
@@ -118,9 +118,9 @@ const NotebookPage = () => {
 
             {/* Notebook Info */}
             <div className="flex items-end gap-3 sm:gap-4">
-              <div 
+              <div
                 className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-2xl sm:text-4xl shrink-0"
-                style={{ 
+                style={{
                   backgroundColor: `${currentNotebook.color}30`,
                   borderColor: currentNotebook.color,
                   borderWidth: 2
@@ -141,7 +141,7 @@ const NotebookPage = () => {
         {/* Content */}
         <div className="p-4 sm:p-6 lg:p-8">
           {/* Create Note Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-6 sm:mb-8"
@@ -189,7 +189,7 @@ const NotebookPage = () => {
 
           {/* Pinned Notes */}
           {pinnedNotes.length > 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -214,7 +214,7 @@ const NotebookPage = () => {
           )}
 
           {/* All Notes */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
