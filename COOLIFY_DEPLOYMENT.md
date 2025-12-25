@@ -20,6 +20,101 @@ Before deploying, be aware of these common issues:
 - A domain name (or use Coolify's wildcard domain)
 - Git repository access (GitHub, GitLab, or Bitbucket)
 
+---
+
+## Custom Domain Setup (Namecheap)
+
+If you're using a domain from Namecheap, follow these steps to connect it to your Coolify deployment.
+
+### Step 1: Get Your Coolify Server IP
+
+Find your Coolify server's public IP address:
+
+```bash
+# SSH into your Coolify server and run:
+curl ifconfig.me
+```
+
+### Step 2: Configure DNS Records in Namecheap
+
+1. Log into your [Namecheap account](https://www.namecheap.com/)
+2. Go to **Domain List** → Click **Manage** on your domain
+3. Navigate to the **Advanced DNS** tab
+4. Add the following A Records:
+
+| Type | Host | Value | TTL | Purpose |
+|------|------|-------|-----|---------|
+| A Record | `@` | `YOUR_COOLIFY_IP` | Automatic | Main frontend (`yourdomain.com`) |
+| A Record | `www` | `YOUR_COOLIFY_IP` | Automatic | WWW subdomain (`www.yourdomain.com`) |
+| A Record | `api` | `YOUR_COOLIFY_IP` | Automatic | Backend API (`api.yourdomain.com`) |
+| A Record | `coolify` | `YOUR_COOLIFY_IP` | Automatic | Coolify Dashboard (`coolify.yourdomain.com`) |
+
+> **Note**: Replace `YOUR_COOLIFY_IP` with your actual server IP address.
+
+### Step 3: Configure Coolify Dashboard Domain
+
+After DNS propagation (may take up to 48 hours, usually much faster):
+
+**Option A: Via SSH**
+
+```bash
+# Edit the Coolify environment file
+nano /data/coolify/source/.env
+
+# Update/Add the APP_URL variable
+APP_URL=https://coolify.yourdomain.com
+
+# Restart Coolify
+cd /data/coolify/source
+docker compose down
+docker compose up -d
+```
+
+**Option B: Via Coolify UI**
+
+1. Access Coolify dashboard using your server IP
+2. Navigate to **Settings** → **Configuration**
+3. Update **Instance's Domain** to `https://coolify.yourdomain.com`
+4. Save and restart
+
+### Step 4: Configure Application Domains in Coolify
+
+**Backend Domain:**
+
+1. Go to your Backend resource → **Settings** → **Domains**
+2. Add: `https://api.yourdomain.com`
+3. Ensure **Ports Exposes** is set to `5000`
+
+**Frontend Domain:**
+
+1. Go to your Frontend resource → **Settings** → **Domains**
+2. Add: `https://yourdomain.com` and `https://www.yourdomain.com`
+3. Ensure **Ports Exposes** is set to `80`
+
+### Step 5: Update Frontend Environment Variable
+
+After configuring domains:
+
+1. Go to Frontend resource → **Environment Variables**
+2. Set: `VITE_API_URL=https://api.yourdomain.com`
+3. **Important**: Click **Rebuild** (not just Redeploy)
+
+### Verify DNS Propagation
+
+Check if your DNS records have propagated:
+
+- Visit [whatsmydns.net](https://www.whatsmydns.net/)
+- Enter your domain and check for your server IP
+
+### Domain Summary
+
+| Domain | Service | Port |
+|--------|---------|------|
+| `yourdomain.com` | Frontend (Nginx) | 80 |
+| `www.yourdomain.com` | Frontend (Nginx) | 80 |
+| `api.yourdomain.com` | Backend (Node.js) | 5000 |
+| `coolify.yourdomain.com` | Coolify Dashboard | 8000 |
+
 ## Architecture Overview
 
 The Notty application consists of three components:
@@ -152,7 +247,8 @@ Set the following environment variables in Coolify:
 |----------|-------------|---------|
 | `VITE_API_URL` | Backend base URL (without `/api`) | `https://api.notty.yourdomain.com` |
 
-> **Important**: 
+> **Important**:
+>
 > - Set `VITE_API_URL` to the backend URL **without** the `/api` suffix. The app automatically appends `/api` to the URL.
 > - This is a **build argument**, not a runtime environment variable. Set it in the Environment Variables section in Coolify.
 > - After changing this value, you must **Rebuild** (not just Redeploy) for changes to take effect.
