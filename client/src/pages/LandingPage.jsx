@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  Sparkles, 
-  BookOpen, 
-  CheckSquare, 
-  Code2, 
-  Image, 
-  Lock, 
-  Zap, 
+import {
+  Sparkles,
+  BookOpen,
+  CheckSquare,
+  Code2,
+  Image,
+  Lock,
+  Zap,
   ArrowRight,
   Github,
   Twitter
@@ -59,7 +59,7 @@ const LandingPage = () => {
       {/* Navigation */}
       <nav className="relative z-10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2"
@@ -69,21 +69,21 @@ const LandingPage = () => {
             </div>
             <span className="text-2xl font-bold gradient-text">Notty</span>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-4"
+            className="flex items-center gap-2 sm:gap-4"
           >
-            <Link 
-              to="/login" 
-              className="px-4 py-2 text-gray-600 dark:text-dark-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            <Link
+              to="/login"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base text-gray-600 dark:text-dark-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Sign In
             </Link>
-            <Link 
-              to="/register" 
-              className="px-6 py-2 bg-gradient-to-r from-primary-600 to-purple-600 rounded-full font-medium text-white hover:shadow-lg hover:shadow-primary-500/30 transition-all"
+            <Link
+              to="/register"
+              className="px-4 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base bg-gradient-to-r from-primary-600 to-purple-600 rounded-full font-medium text-white hover:shadow-lg hover:shadow-primary-500/30 transition-all"
             >
               Get Started
             </Link>
@@ -123,7 +123,7 @@ const LandingPage = () => {
             transition={{ delay: 0.4 }}
             className="text-xl text-gray-500 dark:text-dark-400 mb-12 max-w-2xl mx-auto"
           >
-            Notty is a modern note-taking platform with rich text editing, code blocks, 
+            Notty is a modern note-taking platform with rich text editing, code blocks,
             todo lists, and more. Capture your thoughts with style.
           </motion.p>
 
@@ -133,14 +133,14 @@ const LandingPage = () => {
             transition={{ delay: 0.5 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link 
+            <Link
               to="/register"
               className="group px-8 py-4 bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl font-semibold text-lg text-white hover:shadow-xl hover:shadow-primary-500/30 transition-all flex items-center gap-2"
             >
               Start Taking Notes
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <a 
+            <a
               href="#features"
               className="px-8 py-4 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl font-semibold text-lg hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors"
             >
@@ -274,7 +274,7 @@ const LandingPage = () => {
               <p className="text-gray-300 text-lg mb-8">
                 Join thousands of users who trust Notty for their note-taking needs.
               </p>
-              <Link 
+              <Link
                 to="/register"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl font-semibold text-lg text-white hover:shadow-xl hover:shadow-primary-500/30 transition-all"
               >

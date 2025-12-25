@@ -42,9 +42,6 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
               </div>
             )}
           </div>
-          {note.isFavorite && (
-            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400 flex-shrink-0" />
-          )}
         </div>
 
         {/* Preview */}
@@ -78,19 +75,19 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
       </Link>
 
       {/* Quick Actions */}
-      <div className={`absolute top-3 right-3 flex items-center gap-1.5 transition-all duration-200 ${showMenu ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+      <div className="absolute top-3 right-3 flex items-center gap-1.5">
         <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             onToggleFavorite?.(note._id);
           }}
-          className={`p-2 rounded-xl backdrop-blur-sm transition-all duration-200 ${note.isFavorite
+          className={`p-1.5 rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isFavorite
             ? 'bg-yellow-500/20 text-yellow-500 shadow-sm shadow-yellow-500/20'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-yellow-500 shadow-sm'
             }`}
         >
-          <Star className={`w-4 h-4 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
+          <Star className={`w-3.5 h-3.5 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
         </button>
         <button
           onClick={(e) => {
@@ -98,12 +95,12 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.stopPropagation();
             onTogglePin?.(note._id);
           }}
-          className={`p-2 rounded-xl backdrop-blur-sm transition-all duration-200 ${note.isPinned
+          className={`p-1.5 rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isPinned
             ? 'bg-primary-500/20 text-primary-500 shadow-sm shadow-primary-500/20'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-primary-500 shadow-sm'
             }`}
         >
-          <Pin className="w-4 h-4" />
+          <Pin className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={(e) => {
@@ -111,12 +108,12 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.stopPropagation();
             setShowMenu(!showMenu);
           }}
-          className={`p-2 rounded-xl backdrop-blur-sm transition-all duration-200 shadow-sm ${showMenu
+          className={`p-1.5 rounded-lg backdrop-blur-sm transition-all duration-200 shadow-sm ${showMenu
             ? 'bg-primary-500/20 text-primary-500'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400'
             }`}
         >
-          <MoreHorizontal className="w-4 h-4" />
+          <MoreHorizontal className="w-3.5 h-3.5" />
         </button>
       </div>
 

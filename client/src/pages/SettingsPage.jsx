@@ -14,7 +14,7 @@ const SettingsPage = () => {
   const { isInstallable, isInstalled, installApp, showIOSInstall } = usePWAInstall();
   const navigate = useNavigate();
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
-  
+
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,15 +33,15 @@ const SettingsPage = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     const result = await updateProfile({ name, email });
-    
+
     if (result.success) {
       toast.success('Profile updated!');
     } else {
       toast.error(result.error);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -54,7 +54,7 @@ const SettingsPage = () => {
     <Layout>
       <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-6 lg:mb-8"
@@ -69,7 +69,7 @@ const SettingsPage = () => {
         </motion.div>
 
         {/* Profile Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -127,7 +127,7 @@ const SettingsPage = () => {
         </motion.div>
 
         {/* Appearance Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -152,14 +152,12 @@ const SettingsPage = () => {
               </div>
               <button
                 onClick={toggleTheme}
-                className={`relative w-14 h-8 rounded-full transition-colors ${
-                  theme === 'dark' ? 'bg-primary-600' : 'bg-gray-300 dark:bg-dark-600'
-                }`}
+                className={`relative w-11 h-6 rounded-full transition-colors ${theme === 'dark' ? 'bg-primary-600' : 'bg-gray-300 dark:bg-dark-600'
+                  }`}
               >
                 <div
-                  className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${
-                    theme === 'dark' ? 'left-7' : 'left-1'
-                  }`}
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${theme === 'dark' ? 'translate-x-5' : 'translate-x-0'
+                    }`}
                 />
               </button>
             </div>
@@ -168,7 +166,7 @@ const SettingsPage = () => {
 
         {/* Install App Section */}
         {(isInstallable || showIOSInstall || isInstalled) && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
@@ -206,7 +204,7 @@ const SettingsPage = () => {
         )}
 
         {/* Security Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -226,7 +224,7 @@ const SettingsPage = () => {
         </motion.div>
 
         {/* Danger Zone */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}

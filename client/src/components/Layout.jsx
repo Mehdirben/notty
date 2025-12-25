@@ -32,10 +32,9 @@ const Layout = ({ children }) => {
     <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white transition-colors duration-300">
       <Sidebar />
       <SearchModal />
-      <main 
-        className={`min-h-screen transition-all duration-300 pb-20 lg:pb-0 ${
-          sidebarOpen ? 'lg:ml-[280px]' : 'lg:ml-[72px]'
-        } ml-0`}
+      <main
+        className={`min-h-screen transition-all duration-300 pb-20 lg:pb-0 ${sidebarOpen ? 'lg:ml-[280px]' : 'lg:ml-[72px]'
+          } ml-0`}
       >
         {children}
       </main>

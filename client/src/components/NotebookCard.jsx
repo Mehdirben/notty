@@ -57,7 +57,7 @@ const NotebookCard = ({ notebook, onEdit, onDelete }) => {
             e.preventDefault();
             setShowMenu(!showMenu);
           }}
-          className="p-2 bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+          className="p-2 bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg transition-all flex items-center justify-center"
         >
           <MoreHorizontal className="w-4 h-4 text-gray-500 dark:text-white" />
         </button>
