@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
+      <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

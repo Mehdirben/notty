@@ -86,7 +86,7 @@ const NotebookPage = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen">
+      <div className="h-full overflow-y-auto">
         {/* Header */}
         <div
           className="relative h-40 sm:h-48 md:h-56"

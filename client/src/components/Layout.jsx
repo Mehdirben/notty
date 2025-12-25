@@ -29,11 +29,11 @@ const Layout = ({ children }) => {
   }, [setIsMobile, setSidebarOpen]);
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white transition-colors duration-300 pt-safe flex flex-col">
+    <div className="h-screen overflow-hidden bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white transition-colors duration-300 pt-safe flex flex-col" style={{ height: '100dvh' }}>
       <Sidebar />
       <SearchModal />
       <main
-        className={`flex-1 overflow-y-auto transition-all duration-300 pb-nav-safe lg:pb-0 ${sidebarOpen ? 'lg:ml-[280px]' : 'lg:ml-[72px]'
+        className={`flex-1 overflow-hidden transition-all duration-300 pb-nav-safe lg:pb-0 ${sidebarOpen ? 'lg:ml-[280px]' : 'lg:ml-[72px]'
           } ml-0`}
       >
         {children}

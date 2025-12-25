@@ -251,8 +251,8 @@ const NotePage = () => {
               <button
                 onClick={handleToggleFavorite}
                 className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${currentNote.isFavorite
-                    ? 'bg-yellow-500/20 text-yellow-500'
-                    : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
+                  ? 'bg-yellow-500/20 text-yellow-500'
+                  : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
                   }`}
               >
                 <Star className={`w-4 h-4 ${currentNote.isFavorite ? 'fill-yellow-400' : ''}`} />
@@ -262,8 +262,8 @@ const NotePage = () => {
               <button
                 onClick={handleTogglePin}
                 className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${currentNote.isPinned
-                    ? 'bg-primary-500/20 text-primary-500'
-                    : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
+                  ? 'bg-primary-500/20 text-primary-500'
+                  : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
                   }`}
               >
                 <Pin className="w-4 h-4" />
@@ -285,7 +285,7 @@ const NotePage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="flex-1 flex flex-col overflow-hidden"
+          className="flex-1 flex flex-col overflow-y-auto"
         >
           {/* Title */}
           <div className="px-3 sm:px-6 md:px-8 lg:px-12 pt-4 sm:pt-6 shrink-0">
@@ -320,13 +320,13 @@ const NotePage = () => {
               placeholder="Start writing your note..."
             />
           </div>
-
-          {/* Metadata - Fixed at bottom above mobile nav */}
-          <div className="fixed bottom-20 lg:bottom-0 left-0 right-0 lg:left-auto lg:right-0 lg:relative px-3 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 border-t border-gray-200 dark:border-dark-800 bg-white/90 dark:bg-dark-950/90 backdrop-blur-sm flex items-center justify-between text-xs text-gray-500 dark:text-dark-500 z-30">
-            <span>Created: {new Date(currentNote.createdAt).toLocaleDateString()}</span>
-            <span>Edited: {new Date(currentNote.updatedAt).toLocaleDateString()}</span>
-          </div>
         </motion.div>
+
+        {/* Metadata - Outside scrollable area, always visible above navbar */}
+        <div className="shrink-0 px-3 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 border-t border-gray-200 dark:border-dark-800 bg-white dark:bg-dark-950 flex items-center justify-between text-xs text-gray-500 dark:text-dark-500">
+          <span>Created: {new Date(currentNote.createdAt).toLocaleDateString()}</span>
+          <span>Edited: {new Date(currentNote.updatedAt).toLocaleDateString()}</span>
+        </div>
       </div>
     </Layout>
   );

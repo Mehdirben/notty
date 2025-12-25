@@ -67,6 +67,17 @@ html:not(.dark) {
   padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
 }
 
+/* Position fixed element right above the mobile nav */
+.bottom-nav-safe {
+  bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 1024px) {
+  .bottom-nav-safe {
+    bottom: 0;
+  }
+}
+
 /* Safe viewport height accounting for both top and bottom safe areas */
 .min-h-screen-safe {
   min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
