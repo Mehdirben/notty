@@ -74,7 +74,8 @@ const SearchModal = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed inset-x-0 top-0 z-50 flex items-start justify-center pt-4 sm:pt-[10vh] px-3 sm:px-4 pb-safe"
+            className="fixed inset-x-0 top-0 z-50 flex items-start justify-center pt-safe px-3 sm:px-4 pb-safe"
+            style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
             onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
           >
             <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[85vh] sm:max-h-[70vh] flex flex-col">

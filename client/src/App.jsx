@@ -39,7 +39,7 @@ function App() {
       <Toaster
         position="top-center"
         containerStyle={{
-          top: 'max(20px, env(safe-area-inset-top, 20px))',
+          top: 60,
         }}
         toastOptions={{
           duration: 3000,
