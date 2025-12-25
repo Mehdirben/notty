@@ -4,6 +4,7 @@ import useAuthStore from './store/authStore';
 import ScrollToTop from './components/ScrollToTop';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import NotebookPage from './pages/NotebookPage';
 import NotePage from './pages/NotePage';
@@ -67,8 +68,8 @@ function App() {
         }}
       />
       <Routes>
-        <Route path="/" element={<PublicRoute><LoginPage /></PublicRoute>} />
-        <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/notebook/:id" element={<ProtectedRoute><NotebookPage /></ProtectedRoute>} />
