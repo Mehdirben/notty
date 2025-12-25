@@ -9,8 +9,7 @@ import {
   Lock,
   Zap,
   ArrowRight,
-  Github,
-  Twitter
+  Github
 } from 'lucide-react';
 
 const LandingPage = () => {
@@ -296,14 +295,11 @@ const LandingPage = () => {
             <span className="font-semibold">Notty</span>
           </div>
           <p className="text-gray-400 dark:text-dark-500 text-sm">
-            © 2024 Notty. Built with ❤️ for productivity lovers.
+            © {new Date().getFullYear()} Notty. Built with ❤️ for productivity lovers.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-gray-400 dark:text-dark-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <a href="https://github.com/Mehdirben/notty" target="_blank" rel="noopener noreferrer" className="text-gray-400 dark:text-dark-500 hover:text-gray-900 dark:hover:text-white transition-colors">
               <Github className="w-5 h-5" />
-            </a>
-            <a href="#" className="text-gray-400 dark:text-dark-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-              <Twitter className="w-5 h-5" />
             </a>
           </div>
         </div>
