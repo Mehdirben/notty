@@ -4,11 +4,11 @@
 
 > Your Ideas, Beautifully Organized
 
-| Aspect | Details |
-|--------|---------|
-| **Technologies** | React, Node.js, Express, MongoDB |
-| **Architecture** | Full-Stack with Docker |
-| **Deployment** | Coolify / Docker Compose |
+| Aspect           | Details                            |
+| ---------------- | ---------------------------------- |
+| **Technologies** | React, Node.js, Express, MongoDB   |
+| **Architecture** | Full-Stack with Docker             |
+| **Deployment**   | Coolify / Docker Compose           |
 
 ---
 
@@ -58,7 +58,6 @@ In today's digital age, note-taking has evolved from simple text files to sophis
 - **Organization**: Customizable notebook system with icons and colors
 - **Security**: JWT authentication with secure session management
 - **Flexible deployment**: Docker and Coolify support for easy deployment
-- **Data Portability**: XML export/import for interoperability with other systems
 
 ### Target Audience
 
@@ -118,14 +117,14 @@ The editor uses **TipTap**, a headless, framework-agnostic rich text editor buil
 
 ### Advanced Features
 
-| Feature | Description |
-|---------|-------------|
-| ⭐ Favorites | Mark important notes for quick access from a dedicated favorites view |
-| 📌 Pin | Pin notes to the top of the list for immediate visibility |
-| 🔍 Search | Global search (Cmd/Ctrl+K) across all notes and notebooks |
-| 🌙 Dark Mode | Elegant dark theme by default, reducing eye strain |
-| 💾 Auto-save | Automatic saving while typing, preventing data loss |
-| 📱 Responsive | Desktop and mobile compatible responsive design |
+| Feature       | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| ⭐ Favorites  | Mark important notes for quick access from a dedicated favorites view  |
+| 📌 Pin        | Pin notes to the top of the list for immediate visibility              |
+| 🔍 Search     | Global search (Cmd/Ctrl+K) across all notes and notebooks              |
+| 🌙 Dark Mode  | Elegant dark theme by default, reducing eye strain                     |
+| 💾 Auto-save  | Automatic saving while typing, preventing data loss                    |
+| 📱 Responsive | Desktop and mobile compatible responsive design                        |
 
 ---
 
@@ -195,7 +194,7 @@ The editor uses **TipTap**, a headless, framework-agnostic rich text editor buil
 
 The decision to implement XML/XSD in Notty was driven by several important considerations:
 
-1. **Data Portability**: XML is a universal format that can be read by virtually any programming language or platform. Users can export their notes and import them into other systems.
+1. **Data Portability**: XML is a universal format that can be read by virtually any programming language or platform.
 
 2. **Data Integrity**: XSD validation ensures that all notes follow a consistent structure. Invalid data is rejected before it enters the system, preventing data corruption.
 
@@ -240,7 +239,6 @@ The decision to implement XML/XSD in Notty was driven by several important consi
 3. Simultaneously, the `xml2js` library converts the content to XML format
 4. The XML is validated against the XSD schema using `libxmljs2`
 5. If valid, the XML representation is also stored in MongoDB
-6. Users can export notes as XML files or import XML files to create notes
 
 ---
 
@@ -324,15 +322,15 @@ The XSD schema (`server/schemas/note.xsd`) defines the complete structure and co
 
 ### Schema Elements Reference
 
-| Element | Type | Required | Description |
-|---------|------|----------|-------------|
-| `note` | NoteType | Yes | Root element containing all note data |
-| `title` | xs:string | Yes | Note title, maximum 200 characters |
-| `content` | xs:string | Yes | Rich text content in HTML format |
-| `createdAt` | xs:string | No | Creation timestamp in ISO 8601 format |
-| `updatedAt` | xs:string | No | Last modification timestamp |
-| `tags` | TagsType | No | Container element for categorization tags |
-| `tag` | xs:string | No | Individual tag, unlimited quantity allowed |
+| Element     | Type      | Required | Description                                |
+| ----------- | --------- | -------- | ------------------------------------------ |
+| `note`      | NoteType  | Yes      | Root element containing all note data      |
+| `title`     | xs:string | Yes      | Note title, maximum 200 characters         |
+| `content`   | xs:string | Yes      | Rich text content in HTML format           |
+| `createdAt` | xs:string | No       | Creation timestamp in ISO 8601 format      |
+| `updatedAt` | xs:string | No       | Last modification timestamp                |
+| `tags`      | TagsType  | No       | Container element for categorization tags  |
+| `tag`       | xs:string | No       | Individual tag, unlimited quantity allowed |
 
 ---
 
@@ -489,10 +487,6 @@ const NoteSchema = new Schema({
     },
     content: { 
         type: String,
-        default: ''
-    },
-    contentXML: {
-        type: String,  // XML representation for export
         default: ''
     },
     notebook: { 
@@ -755,32 +749,98 @@ The application follows a classic **three-tier architecture**, separating concer
 
 ## Frontend Stack Summary
 
-| Technology | Role | Version |
-|------------|------|---------|
-| React | Component-based UI library | 18.2.0 |
-| Vite | Fast build tool with instant HMR | 5.0.8 |
-| TailwindCSS | Utility-first CSS framework | 3.4.0 |
-| Framer Motion | Declarative animation library | 10.16.16 |
-| TipTap | Headless rich text editor | 2.1.13 |
-| Zustand | Lightweight state management | 4.4.7 |
-| React Router DOM | Client-side routing | 6.21.1 |
-| Axios | Promise-based HTTP client | 1.6.2 |
-| Lucide React | Modern icon library | 0.303.0 |
+| Technology       | Role                              | Version   |
+| ---------------- | --------------------------------- | --------- |
+| React            | Component-based UI library        | 18.2.0    |
+| Vite             | Fast build tool with instant HMR  | 5.0.8     |
+| TailwindCSS      | Utility-first CSS framework       | 3.4.0     |
+| Framer Motion    | Declarative animation library     | 10.16.16  |
+| TipTap           | Headless rich text editor         | 2.1.13    |
+| Zustand          | Lightweight state management      | 4.4.7     |
+| React Router DOM | Client-side routing               | 6.21.1    |
+| Axios            | Promise-based HTTP client         | 1.6.2     |
+| Lucide React     | Modern icon library               | 0.303.0   |
 
 ## Backend Stack Summary
 
-| Technology | Role | Version |
-|------------|------|---------|
-| Node.js | Server-side JavaScript runtime | 18+ |
-| Express.js | Minimalist web framework | 4.18.2 |
-| MongoDB | Document-oriented database | 7.0 |
-| Mongoose | MongoDB ODM with schema validation | 8.0.3 |
-| JWT (jsonwebtoken) | Stateless authentication tokens | 9.0.2 |
-| bcryptjs | Secure password hashing | 2.4.3 |
-| Multer | Multipart file upload handling | 1.4.5-lts.1 |
-| xml2js | XML/JSON conversion | 0.6.2 |
-| libxmljs2 | XSD validation engine | latest |
-| express-validator | Request data validation | 7.0.1 |
+| Technology         | Role                               | Version     |
+| ------------------ | ---------------------------------- | ----------- |
+| Node.js            | Server-side JavaScript runtime     | 18+         |
+| Express.js         | Minimalist web framework           | 4.18.2      |
+| MongoDB            | Document-oriented database         | 7.0         |
+| Mongoose           | MongoDB ODM with schema validation | 8.0.3       |
+| JWT (jsonwebtoken) | Stateless authentication tokens    | 9.0.2       |
+| bcryptjs           | Secure password hashing            | 2.4.3       |
+| Multer             | Multipart file upload handling     | 1.4.5-lts.1 |
+| xml2js             | XML/JSON conversion                | 0.6.2       |
+| libxmljs2          | XSD validation engine              | latest      |
+| express-validator  | Request data validation            | 7.0.1       |
+
+---
+
+## DevOps & Deployment Technologies
+
+### Docker
+
+**What it is:** Docker is a platform for developing, shipping, and running applications inside lightweight, portable containers. Containers package an application with all its dependencies, ensuring consistent behavior across different environments.
+
+**Why we chose it:**
+
+- **Environment Consistency**: "Works on my machine" problems are eliminated—the same container runs identically in development, testing, and production
+- **Isolation**: Each service runs in its own container with isolated dependencies, preventing conflicts
+- **Portability**: Containers can run on any system with Docker installed, regardless of the underlying OS
+- **Lightweight**: Containers share the host OS kernel, making them much faster and smaller than virtual machines
+- **Version Control**: Dockerfiles version-control the infrastructure alongside the code
+- **Scalability**: Easy to scale by running multiple container instances
+
+**How we use it in Notty:**
+
+- Separate Dockerfiles for frontend (React + Nginx) and backend (Node.js + Express)
+- Multi-stage builds to minimize production image sizes
+- Health checks to ensure container readiness before routing traffic
+
+### Docker Compose
+
+**What it is:** Docker Compose is a tool for defining and running multi-container Docker applications. It uses a YAML file to configure all application services, networks, and volumes in a single file.
+
+**Why we chose it:**
+
+- **Single Command Deployment**: Start the entire stack (frontend, backend, database) with `docker-compose up`
+- **Service Orchestration**: Define service dependencies (e.g., backend waits for MongoDB)
+- **Networking**: Services communicate via service names
+- **Volume Management**: Persistent storage survives container restarts
+- **Environment Configuration**: Centralized environment variable management
+- **Development Parity**: Same config for development and production
+
+**Our docker-compose.yml defines:**
+
+- **Frontend service**: React app served through Nginx on port 3000
+- **Backend service**: Express.js API on port 5000 with health checks
+- **MongoDB service**: Database with authentication and persistent volumes
+- **Shared network**: Internal network for secure inter-service communication
+
+### Coolify
+
+**What it is:** Coolify is an open-source, self-hostable Platform-as-a-Service (PaaS) alternative to Heroku, Vercel, or Netlify. It provides a user-friendly interface for deploying applications on your own servers.
+
+**Why we chose it:**
+
+- **Self-Hosted**: Complete control over your infrastructure and data—no vendor lock-in
+- **Cost-Effective**: Deploy on affordable VPS providers instead of expensive PaaS solutions
+- **Git Integration**: Automatic deployments when pushing to GitHub/GitLab repositories
+- **SSL Certificates**: Automatic Let's Encrypt SSL certificate provisioning and renewal
+- **Docker Native**: Seamlessly deploys Docker and Docker Compose applications
+- **Database Management**: Built-in support for deploying and managing databases (MongoDB, PostgreSQL, etc.)
+- **Environment Variables**: Secure management of secrets and configuration per deployment
+- **Monitoring**: Real-time logs, resource usage monitoring, and deployment history
+
+**How we use Coolify for Notty:**
+
+- Connected to our GitHub repository for automatic deployments on push
+- Configured environment variables for `MONGODB_URI`, `JWT_SECRET`, etc.
+- Automatic SSL with custom domain (`notty.mehdiben.com`)
+- Deployed MongoDB as a managed database resource
+- Zero-downtime deployments with health check validation
 
 ---
 
@@ -817,55 +877,52 @@ The API follows RESTful conventions with consistent URL patterns and HTTP method
 
 ### Authentication Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Create new user account |
-| POST | /api/auth/login | Authenticate and receive JWT |
-| GET | /api/auth/me | Get current user profile (protected) |
-| PUT | /api/auth/profile | Update user profile (protected) |
+| Method | Endpoint           | Description                          |
+| ------ | ------------------ | ------------------------------------ |
+| POST   | /api/auth/register | Create new user account              |
+| POST   | /api/auth/login    | Authenticate and receive JWT         |
+| GET    | /api/auth/me       | Get current user profile (protected) |
+| PUT    | /api/auth/profile  | Update user profile (protected)      |
 
 ### Notebook Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/notebooks | List all user's notebooks |
-| GET | /api/notebooks/:id | Get notebook details with note count |
-| POST | /api/notebooks | Create new notebook |
-| PUT | /api/notebooks/:id | Update notebook properties |
+| Method | Endpoint           | Description                              |
+| ------ | ------------------ | ---------------------------------------- |
+| GET    | /api/notebooks     | List all user's notebooks                |
+| GET    | /api/notebooks/:id | Get notebook details with note count     |
+| POST   | /api/notebooks     | Create new notebook                      |
+| PUT    | /api/notebooks/:id | Update notebook properties               |
 | DELETE | /api/notebooks/:id | Delete notebook and optionally its notes |
 
 ### Note Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/notes | List notes (supports filtering) |
-| GET | /api/notes/:id | Get single note with full content |
-| GET | /api/notes/:id/xml | Export note as XML document |
-| POST | /api/notes | Create new note |
-| PUT | /api/notes/:id | Update note content |
-| DELETE | /api/notes/:id | Delete note permanently |
-| POST | /api/notes/import-xml | Import note from XML file |
-| GET | /api/notes/schema | Download XSD schema file |
+| Method | Endpoint               | Description                       |
+| ------ | ---------------------- | --------------------------------- |
+| GET    | /api/notes             | List notes (supports filtering)   |
+| GET    | /api/notes/:id         | Get single note with full content |
+| POST   | /api/notes             | Create new note                   |
+| PUT    | /api/notes/:id         | Update note content               |
+| DELETE | /api/notes/:id         | Delete note permanently           |
 
 ### Upload Endpoint
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/upload | Upload image file (returns URL) |
+| Method | Endpoint    | Description                     |
+| ------ | ----------- | ------------------------------- |
+| POST   | /api/upload | Upload image file (returns URL) |
 
 ---
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| Cmd/Ctrl + K | Open global search modal |
-| Cmd/Ctrl + S | Save current note |
-| Cmd/Ctrl + B | Toggle bold formatting |
-| Cmd/Ctrl + I | Toggle italic formatting |
-| Cmd/Ctrl + U | Toggle underline |
-| Cmd/Ctrl + Shift + X | Toggle strikethrough |
-| Escape | Close modals and dialogs |
+| Shortcut             | Action                   |
+| -------------------- | ------------------------ |
+| Cmd/Ctrl + K         | Open global search modal |
+| Cmd/Ctrl + S         | Save current note        |
+| Cmd/Ctrl + B         | Toggle bold formatting   |
+| Cmd/Ctrl + I         | Toggle italic formatting |
+| Cmd/Ctrl + U         | Toggle underline         |
+| Cmd/Ctrl + Shift + X | Toggle strikethrough     |
+| Escape               | Close modals and dialogs |
 
 ---
 
@@ -920,13 +977,13 @@ volumes:
 
 ### Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| PORT | Backend server port | 5000 |
-| MONGODB_URI | MongoDB connection string | mongodb://... |
-| JWT_SECRET | Secret for signing tokens | (random 64 chars) |
-| JWT_EXPIRE | Token expiration duration | 7d |
-| VITE_API_URL | API URL for frontend | <http://localhost:5000> |
+| Variable     | Description                 | Example                 |
+| ------------ | --------------------------- | ----------------------- |
+| PORT         | Backend server port         | 5000                    |
+| MONGODB_URI  | MongoDB connection string   | mongodb://...           |
+| JWT_SECRET   | Secret for signing tokens   | (random 64 chars)       |
+| JWT_EXPIRE   | Token expiration duration   | 7d                      |
+| VITE_API_URL | API URL for frontend        | `http://localhost:5000` |
 
 ---
 
@@ -954,7 +1011,7 @@ The dashboard is your workspace for managing notes. Use the **left sidebar** to 
 
 ![Note Editor](assets/note.png)
 
-Click on any note to open the editor. Use the **toolbar** to format your text: apply **H1/H2/H3** headings, make text **bold** (Ctrl+B), *italic* (Ctrl+I), or underlined (Ctrl+U). Create bullet lists, numbered lists, or task lists with checkboxes. Insert code blocks with syntax highlighting for technical notes, and add images by clicking the image icon or dragging files directly into the editor. Your notes **auto-save** as you type, so you never lose your work. To export a note as XML, use the export button in the note options menu.
+Click on any note to open the editor. Use the **toolbar** to format your text: apply **H1/H2/H3** headings, make text **bold** (Ctrl+B), *italic* (Ctrl+I), or underlined (Ctrl+U). Create bullet lists, numbered lists, or task lists with checkboxes. Insert code blocks with syntax highlighting for technical notes, and add images by clicking the image icon or dragging files directly into the editor. Your notes **auto-save** as you type, so you never lose your work.
 
 ---
 
@@ -1044,3 +1101,161 @@ Notty represents a modern and comprehensive solution for note-taking, combining 
 - Plugin system for custom extensions
 - Full-text search with Elasticsearch
 - End-to-end encryption option
+
+---
+
+**Repository:** [https://github.com/Mehdirben/notty_react](https://github.com/Mehdirben/notty_react)
+
+---
+
+## Part V: Annexes
+
+This section contains key source code extracts from the Notty application.
+
+## Note Model with XML Support
+
+```javascript
+// server/models/Note.js
+import mongoose from 'mongoose';
+
+const noteSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Please provide a note title'],
+    trim: true,
+    maxlength: [200, 'Title cannot exceed 200 characters']
+  },
+  content: { type: String, default: '' },
+  notebook: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Notebook',
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  tags: [{ type: String, trim: true }],
+  isPinned: { type: Boolean, default: false },
+  isFavorite: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+noteSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+noteSchema.index({ title: 'text', content: 'text', tags: 'text' });
+
+export default mongoose.model('Note', noteSchema);
+```
+
+---
+
+## XSD Schema
+
+```xml
+<!-- server/schemas/note.xsd -->
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+  
+  <xs:element name="note" type="NoteType"/>
+  
+  <xs:complexType name="NoteType">
+    <xs:all>
+      <xs:element name="title" type="xs:string" minOccurs="1"/>
+      <xs:element name="content" type="xs:string" minOccurs="1"/>
+      <xs:element name="createdAt" type="xs:string" minOccurs="0"/>
+      <xs:element name="updatedAt" type="xs:string" minOccurs="0"/>
+      <xs:element name="tags" type="TagsType" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+  
+  <xs:complexType name="TagsType">
+    <xs:sequence>
+      <xs:element name="tag" type="xs:string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+</xs:schema>
+```
+
+---
+
+## JWT Authentication Middleware
+
+```javascript
+// server/middleware/auth.js
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+
+export const protect = async (req, res, next) => {
+  let token;
+
+  if (req.headers.authorization?.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.id).select('-password');
+      next();
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({
+          message: 'Token expired, please log in again',
+          expired: true
+        });
+      }
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+  }
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+};
+```
+
+---
+
+## Zustand Authentication Store
+
+```javascript
+// client/src/store/authStore.js
+import { create } from 'zustand';
+import api from '../api/axios';
+
+const useAuthStore = create((set) => ({
+  user: JSON.parse(localStorage.getItem('notty_user')) || null,
+  token: localStorage.getItem('notty_token') || null,
+  isAuthenticated: !!localStorage.getItem('notty_token'),
+  isLoading: false,
+
+  login: async (email, password) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await api.post('/auth/login', { email, password });
+      localStorage.setItem('notty_token', data.token);
+      localStorage.setItem('notty_user', JSON.stringify(data));
+      set({ user: data, token: data.token, isAuthenticated: true });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message };
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('notty_token');
+    localStorage.removeItem('notty_user');
+    set({ user: null, token: null, isAuthenticated: false });
+  }
+}));
+
+export default useAuthStore;
+```
