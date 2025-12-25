@@ -323,7 +323,7 @@ const NotePage = () => {
         </motion.div>
 
         {/* Metadata - Outside scrollable area, always visible above navbar */}
-        <div className="shrink-0 px-3 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 border-t border-gray-200 dark:border-dark-800 bg-white dark:bg-dark-950 flex items-center justify-between text-xs text-gray-500 dark:text-dark-500">
+        <div className="shrink-0 px-3 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 border-t border-gray-200 dark:border-dark-800 bg-gray-50 dark:bg-dark-950 flex items-center justify-between text-xs text-gray-500 dark:text-dark-500">
           <span>Created: {new Date(currentNote.createdAt).toLocaleDateString()}</span>
           <span>Edited: {new Date(currentNote.updatedAt).toLocaleDateString()}</span>
         </div>
