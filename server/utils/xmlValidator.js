@@ -6,32 +6,42 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Path to the XSD schema file
-const schemaPath = join(__dirname, '..', 'schemas', 'note.xsd');
+// Paths to all XSD schema files
+const schemaPaths = {
+    note: join(__dirname, '..', 'schemas', 'note.xsd'),
+    user: join(__dirname, '..', 'schemas', 'user.xsd'),
+    notebook: join(__dirname, '..', 'schemas', 'notebook.xsd')
+};
 
-// Load and parse the XSD schema
-let xsdDoc = null;
+// Cache for parsed XSD documents
+const xsdCache = {};
 
 /**
  * Loads the XSD schema from file
+ * @param {string} schemaType - The type of schema: 'note', 'user', or 'notebook'
  * @returns {object} The parsed XSD document
  */
-function loadSchema() {
-    if (!xsdDoc) {
-        const xsdContent = readFileSync(schemaPath, 'utf-8');
-        xsdDoc = libxmljs.parseXml(xsdContent);
+function loadSchema(schemaType = 'note') {
+    if (!schemaPaths[schemaType]) {
+        throw new Error(`Unknown schema type: ${schemaType}. Valid types are: note, user, notebook`);
     }
-    return xsdDoc;
+
+    if (!xsdCache[schemaType]) {
+        const xsdContent = readFileSync(schemaPaths[schemaType], 'utf-8');
+        xsdCache[schemaType] = libxmljs.parseXml(xsdContent);
+    }
+    return xsdCache[schemaType];
 }
 
 /**
- * Validates XML content against the note XSD schema
+ * Validates XML content against an XSD schema
  * @param {string} xmlString - The XML string to validate
+ * @param {string} schemaType - The type of schema: 'note', 'user', or 'notebook' (default: 'note')
  * @returns {object} Validation result with isValid boolean and errors array
  */
-export function validateXML(xmlString) {
+export function validateXML(xmlString, schemaType = 'note') {
     try {
-        const xsd = loadSchema();
+        const xsd = loadSchema(schemaType);
         const xmlDoc = libxmljs.parseXml(xmlString);
 
         const isValid = xmlDoc.validate(xsd);
@@ -56,18 +66,34 @@ export function validateXML(xmlString) {
 
 /**
  * Gets the XSD schema content as a string
+ * @param {string} schemaType - The type of schema: 'note', 'user', or 'notebook' (default: 'note')
  * @returns {string} The XSD schema content
  */
-export function getSchemaContent() {
-    return readFileSync(schemaPath, 'utf-8');
+export function getSchemaContent(schemaType = 'note') {
+    if (!schemaPaths[schemaType]) {
+        throw new Error(`Unknown schema type: ${schemaType}. Valid types are: note, user, notebook`);
+    }
+    return readFileSync(schemaPaths[schemaType], 'utf-8');
 }
 
 /**
- * Gets the path to the XSD schema file
+ * Gets the path to an XSD schema file
+ * @param {string} schemaType - The type of schema: 'note', 'user', or 'notebook' (default: 'note')
  * @returns {string} The absolute path to the XSD schema
  */
-export function getSchemaPath() {
-    return schemaPath;
+export function getSchemaPath(schemaType = 'note') {
+    if (!schemaPaths[schemaType]) {
+        throw new Error(`Unknown schema type: ${schemaType}. Valid types are: note, user, notebook`);
+    }
+    return schemaPaths[schemaType];
 }
 
-export default { validateXML, getSchemaContent, getSchemaPath };
+/**
+ * Gets all available schema types
+ * @returns {string[]} Array of available schema types
+ */
+export function getAvailableSchemas() {
+    return Object.keys(schemaPaths);
+}
+
+export default { validateXML, getSchemaContent, getSchemaPath, getAvailableSchemas };

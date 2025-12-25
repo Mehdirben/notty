@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  
+  <!-- Root element: user -->
+  <xs:element name="user" type="UserType"/>
+  
+  <!-- UserType definition -->
+  <xs:complexType name="UserType">
+    <xs:all>
+      <!-- Name is required, max 50 characters -->
+      <xs:element name="name" minOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      
+      <!-- Email is required -->
+      <xs:element name="email" minOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      
+      <!-- Avatar is optional -->
+      <xs:element name="avatar" type="xs:string" minOccurs="0"/>
+      
+      <!-- Timestamp is optional -->
+      <xs:element name="createdAt" type="xs:string" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+  
+</xs:schema>
