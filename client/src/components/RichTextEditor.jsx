@@ -231,6 +231,25 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
     setImagePopup({ show: false, src: '', alt: '' });
   }, []);
 
+  // Block keyboard when image popup is open
+  useEffect(() => {
+    if (!imagePopup.show) return;
+
+    const handleKeyDown = (e) => {
+      // Allow Escape to close the popup
+      if (e.key === 'Escape') {
+        closeImagePopup();
+        return;
+      }
+      // Block all other keyboard input
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
+  }, [imagePopup.show, closeImagePopup]);
+
   // Handle link clicks intelligently
   const handleLinkClick = useCallback((event) => {
     const target = event.target;
