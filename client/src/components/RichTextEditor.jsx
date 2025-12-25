@@ -223,6 +223,10 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
 
   // Open image popup
   const openImagePopup = useCallback((src, alt) => {
+    // Blur any focused element to hide mobile keyboard
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setImagePopup({ show: true, src, alt: alt || 'Image' });
   }, []);
 
