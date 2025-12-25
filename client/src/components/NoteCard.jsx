@@ -8,12 +8,19 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
 
-  // Strip HTML tags for preview
+  // Strip HTML tags for preview - show only first line/paragraph
   const getPreviewText = (html) => {
+    if (!html) return '';
     const div = document.createElement('div');
-    div.innerHTML = html || '';
+    div.innerHTML = html;
+    // Try to get just the first block element (p, div, li, etc.)
+    const firstBlock = div.querySelector('p, div, li, h1, h2, h3, h4, h5, h6');
+    if (firstBlock) {
+      return firstBlock.textContent?.trim() || '';
+    }
+    // Fallback: get text up to first <br> or just the text content
     const text = div.textContent || div.innerText || '';
-    return text.slice(0, 150) + (text.length > 150 ? '...' : '');
+    return text.trim();
   };
 
   // Close menu when clicking outside
