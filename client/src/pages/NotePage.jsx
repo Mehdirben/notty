@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Star, 
-  Pin, 
-  MoreHorizontal, 
-  Trash2, 
+import {
+  ArrowLeft,
+  Star,
+  Pin,
+  MoreHorizontal,
+  Trash2,
   Clock,
   Save,
   Check,
@@ -24,7 +24,7 @@ const NotePage = () => {
   const [content, setContent] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
-  
+
   const { currentNote, getNote, updateNote, deleteNote, toggleFavorite, togglePin, isSaving, isLoading, error } = useNoteStore();
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const NotePage = () => {
       <Layout>
         <div className="min-h-screen flex items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="max-w-lg w-full text-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               className="mb-6 sm:mb-8 lg:mb-10"
@@ -140,8 +140,8 @@ const NotePage = () => {
                 The note you're looking for doesn't exist or has been deleted. It might have been moved or the link could be broken.
               </p>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -161,7 +161,7 @@ const NotePage = () => {
               </button>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -189,9 +189,9 @@ const NotePage = () => {
 
   return (
     <Layout>
-      <div className="h-screen flex flex-col overflow-hidden">
+      <div className="h-full flex flex-col overflow-hidden">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="sticky top-0 z-20 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg border-b border-gray-200 dark:border-dark-800 shrink-0"
@@ -206,7 +206,7 @@ const NotePage = () => {
                 <ArrowLeft className="w-4 h-4" />
                 <span className="hidden sm:inline">Back</span>
               </button>
-              
+
               {currentNote.notebook && (
                 <div className="hidden md:flex items-center gap-2 text-gray-500 dark:text-dark-400 truncate">
                   <span>{currentNote.notebook.icon || '📓'}</span>
@@ -250,11 +250,10 @@ const NotePage = () => {
               {/* Favorite */}
               <button
                 onClick={handleToggleFavorite}
-                className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${
-                  currentNote.isFavorite 
-                    ? 'bg-yellow-500/20 text-yellow-500' 
+                className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${currentNote.isFavorite
+                    ? 'bg-yellow-500/20 text-yellow-500'
                     : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
-                }`}
+                  }`}
               >
                 <Star className={`w-4 h-4 ${currentNote.isFavorite ? 'fill-yellow-400' : ''}`} />
               </button>
@@ -262,11 +261,10 @@ const NotePage = () => {
               {/* Pin */}
               <button
                 onClick={handleTogglePin}
-                className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${
-                  currentNote.isPinned 
-                    ? 'bg-primary-500/20 text-primary-500' 
+                className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${currentNote.isPinned
+                    ? 'bg-primary-500/20 text-primary-500'
                     : 'hover:bg-gray-100 dark:hover:bg-dark-800 text-gray-500 dark:text-dark-400'
-                }`}
+                  }`}
               >
                 <Pin className="w-4 h-4" />
               </button>
@@ -283,7 +281,7 @@ const NotePage = () => {
         </motion.div>
 
         {/* Content */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
