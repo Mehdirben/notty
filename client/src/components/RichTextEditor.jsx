@@ -45,7 +45,7 @@ const ImageThumbnailComponent = ({ node }) => {
   const openPopup = useContext(ImagePopupContext);
 
   return (
-    <NodeViewWrapper className="inline-block my-2">
+    <NodeViewWrapper as="span" className="inline-block mr-2 align-top">
       <div
         className="relative inline-block cursor-pointer group"
         onClick={() => openPopup(src, alt)}
@@ -70,8 +70,10 @@ const ImageThumbnailComponent = ({ node }) => {
   );
 };
 
-// Custom Image Extension with thumbnail view
+// Custom Image Extension with inline thumbnail view
 const CustomImage = Image.extend({
+  inline: true,
+  group: 'inline',
   addNodeView() {
     return ReactNodeViewRenderer(ImageThumbnailComponent);
   },
