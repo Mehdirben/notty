@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, createContext, useContext } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -12,13 +12,13 @@ import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { common, createLowlight } from 'lowlight';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { 
-  Bold, 
-  Italic, 
-  Strikethrough, 
-  Code, 
-  List, 
-  ListOrdered, 
+import {
+  Bold,
+  Italic,
+  Strikethrough,
+  Code,
+  List,
+  ListOrdered,
   CheckSquare,
   Quote,
   Heading1,
@@ -32,8 +32,50 @@ import {
   ExternalLink,
   FileText,
   X,
-  Youtube
+  Youtube,
+  ZoomIn
 } from 'lucide-react';
+
+// Context for image popup
+const ImagePopupContext = createContext(null);
+
+// Custom Image Component for thumbnail display
+const ImageThumbnailComponent = ({ node }) => {
+  const { src, alt } = node.attrs;
+  const openPopup = useContext(ImagePopupContext);
+
+  return (
+    <NodeViewWrapper className="inline-block my-2">
+      <div
+        className="relative inline-block cursor-pointer group"
+        onClick={() => openPopup(src, alt)}
+      >
+        <img
+          src={src}
+          alt={alt || 'Image'}
+          className="rounded-lg object-cover transition-transform hover:scale-105"
+          style={{
+            maxWidth: '150px',
+            maxHeight: '150px',
+            width: 'auto',
+            height: 'auto'
+          }}
+          draggable={false}
+        />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-lg transition-colors flex items-center justify-center">
+          <ZoomIn className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+        </div>
+      </div>
+    </NodeViewWrapper>
+  );
+};
+
+// Custom Image Extension with thumbnail view
+const CustomImage = Image.extend({
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageThumbnailComponent);
+  },
+});
 
 const lowlight = createLowlight(common);
 
@@ -61,11 +103,11 @@ const CustomLink = Link.extend({
       ...this.parent?.(),
       setLink:
         (attributes) =>
-        ({ chain }) => {
-          return chain()
-            .setMark(this.name, attributes)
-            .run();
-        },
+          ({ chain }) => {
+            return chain()
+              .setMark(this.name, attributes)
+              .run();
+          },
     };
   },
 }).configure({
@@ -78,7 +120,7 @@ const CustomLink = Link.extend({
 // YouTube Component for React Node View
 const YouTubeComponent = ({ node, updateAttributes }) => {
   const { videoId, width, height } = node.attrs;
-  
+
   return (
     <NodeViewWrapper className="youtube-wrapper my-4">
       <div className="relative">
@@ -159,11 +201,10 @@ const MenuButton = ({ onClick, isActive, disabled, children, title }) => (
     onClick={onClick}
     disabled={disabled}
     title={title}
-    className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${
-      isActive 
-        ? 'bg-primary-500/20 text-primary-500' 
-        : 'text-gray-500 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-gray-900 dark:hover:text-white'
-    } disabled:opacity-50 disabled:cursor-not-allowed`}
+    className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg transition-colors ${isActive
+      ? 'bg-primary-500/20 text-primary-500'
+      : 'text-gray-500 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-gray-900 dark:hover:text-white'
+      } disabled:opacity-50 disabled:cursor-not-allowed`}
   >
     {children}
   </button>
@@ -175,17 +216,28 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
   const [linkType, setLinkType] = useState('external'); // 'external' or 'internal'
   const [showYouTubeModal, setShowYouTubeModal] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [imagePopup, setImagePopup] = useState({ show: false, src: '', alt: '' });
   const navigate = useNavigate();
+
+  // Open image popup
+  const openImagePopup = useCallback((src, alt) => {
+    setImagePopup({ show: true, src, alt: alt || 'Image' });
+  }, []);
+
+  // Close image popup
+  const closeImagePopup = useCallback(() => {
+    setImagePopup({ show: false, src: '', alt: '' });
+  }, []);
 
   // Handle link clicks intelligently
   const handleLinkClick = useCallback((event) => {
     const target = event.target;
     if (target.tagName === 'A' && target.href) {
       event.preventDefault();
-      
+
       const url = target.href;
       const currentOrigin = window.location.origin;
-      
+
       // Check if it's an internal link
       if (url.startsWith(currentOrigin) || url.startsWith('/')) {
         // Internal link - navigate within the same tab
@@ -222,7 +274,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       TaskItem.configure({
         nested: true,
       }),
-      Image.configure({
+      CustomImage.configure({
         allowBase64: true,
         HTMLAttributes: {
           class: 'rounded-lg max-w-full',
@@ -262,7 +314,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    
+
     input.onchange = async (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -278,7 +330,7 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
       };
       reader.readAsDataURL(file);
     };
-    
+
     input.click();
   }, [editor]);
 
@@ -303,14 +355,14 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
     }
 
     let finalUrl = linkUrl.trim();
-    
+
     // Validate and format URLs based on type
     if (linkType === 'external') {
       // Add https:// for external links if not present
       if (!finalUrl.startsWith('http')) {
         finalUrl = `https://${finalUrl}`;
       }
-      
+
       // Basic URL validation for external links
       try {
         new URL(finalUrl);
@@ -324,11 +376,11 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
         toast.error('Internal links must start with / (e.g., /note/123)');
         return;
       }
-      
+
       // Check if it's a valid internal path format
       const validInternalPaths = ['/note/', '/notebook/', '/dashboard', '/favorites'];
       const isValidInternal = validInternalPaths.some(path => finalUrl.startsWith(path));
-      
+
       if (!isValidInternal && finalUrl !== '/dashboard' && finalUrl !== '/favorites') {
         toast.error('Invalid internal path. Use formats like /note/123 or /notebook/456');
         return;
@@ -373,317 +425,340 @@ const RichTextEditor = ({ content, onChange, placeholder = "Start writing..." })
   }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Link Modal */}
-      {showLinkModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-dark-800 rounded-lg shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add Link</h3>
+    <ImagePopupContext.Provider value={openImagePopup}>
+      <div className="flex flex-col h-full">
+        {/* Image Popup Modal */}
+        {imagePopup.show && (
+          <div
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4"
+            onClick={closeImagePopup}
+          >
+            <div className="relative max-w-[90vw] max-h-[90vh]">
               <button
-                onClick={() => setShowLinkModal(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                onClick={closeImagePopup}
+                className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-8 h-8" />
               </button>
+              <img
+                src={imagePopup.src}
+                alt={imagePopup.alt}
+                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
             </div>
-            
-            <div className="p-4">
-              {/* Link Type Selection */}
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={() => setLinkType('external')}
-                  className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
-                    linkType === 'external'
-                      ? 'bg-primary-500 text-white border-primary-500'
-                      : 'bg-white dark:bg-dark-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-dark-600 hover:bg-gray-50 dark:hover:bg-dark-600'
-                  }`}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  External Link
-                </button>
-                <button
-                  onClick={() => setLinkType('internal')}
-                  className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
-                    linkType === 'internal'
-                      ? 'bg-primary-500 text-white border-primary-500'
-                      : 'bg-white dark:bg-dark-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-dark-600 hover:bg-gray-50 dark:hover:bg-dark-600'
-                  }`}
-                >
-                  <FileText className="w-4 h-4" />
-                  Internal Note
-                </button>
-              </div>
+          </div>
+        )}
 
-              {/* URL Input */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {linkType === 'external' ? 'External URL' : 'Note Path'}
-                </label>
-                <input
-                  type="text"
-                  value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
-                  placeholder={
-                    linkType === 'external' 
-                      ? 'example.com' 
-                      : '/note/note-id'
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-700 dark:text-white"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleLinkSubmit();
-                    }
-                  }}
-                />
-                {linkType === 'external' && (
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    HTTPS will be added automatically if not provided
-                  </p>
-                )}
-                {linkType === 'internal' && (
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Enter the path to an internal note (e.g., /note/123)
-                  </p>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <button
-                  onClick={handleLinkSubmit}
-                  className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
-                >
-                  Add Link
-                </button>
-                <button
-                  onClick={handleRemoveLink}
-                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
-                >
-                  Remove
-                </button>
+        {/* Link Modal */}
+        {showLinkModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-dark-800 rounded-lg shadow-xl max-w-md w-full">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add Link</h3>
                 <button
                   onClick={() => setShowLinkModal(false)}
-                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  Cancel
+                  <X className="w-5 h-5" />
                 </button>
+              </div>
+
+              <div className="p-4">
+                {/* Link Type Selection */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setLinkType('external')}
+                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-colors ${linkType === 'external'
+                      ? 'bg-primary-500 text-white border-primary-500'
+                      : 'bg-white dark:bg-dark-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-dark-600 hover:bg-gray-50 dark:hover:bg-dark-600'
+                      }`}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    External Link
+                  </button>
+                  <button
+                    onClick={() => setLinkType('internal')}
+                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-colors ${linkType === 'internal'
+                      ? 'bg-primary-500 text-white border-primary-500'
+                      : 'bg-white dark:bg-dark-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-dark-600 hover:bg-gray-50 dark:hover:bg-dark-600'
+                      }`}
+                  >
+                    <FileText className="w-4 h-4" />
+                    Internal Note
+                  </button>
+                </div>
+
+                {/* URL Input */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {linkType === 'external' ? 'External URL' : 'Note Path'}
+                  </label>
+                  <input
+                    type="text"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    placeholder={
+                      linkType === 'external'
+                        ? 'example.com'
+                        : '/note/note-id'
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-700 dark:text-white"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleLinkSubmit();
+                      }
+                    }}
+                  />
+                  {linkType === 'external' && (
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      HTTPS will be added automatically if not provided
+                    </p>
+                  )}
+                  {linkType === 'internal' && (
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      Enter the path to an internal note (e.g., /note/123)
+                    </p>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleLinkSubmit}
+                    className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                  >
+                    Add Link
+                  </button>
+                  <button
+                    onClick={handleRemoveLink}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                  >
+                    Remove
+                  </button>
+                  <button
+                    onClick={() => setShowLinkModal(false)}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* YouTube Modal */}
-      {showYouTubeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-dark-800 rounded-lg shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add YouTube Video</h3>
-              <button
-                onClick={() => setShowYouTubeModal(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-4">
-              {/* URL Input */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  YouTube URL
-                </label>
-                <input
-                  type="text"
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-700 dark:text-white"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleYouTubeSubmit();
-                    }
-                  }}
-                />
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Paste any YouTube video URL (youtube.com, youtu.be, etc.)
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <button
-                  onClick={handleYouTubeSubmit}
-                  className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
-                >
-                  Add Video
-                </button>
+        {/* YouTube Modal */}
+        {showYouTubeModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-dark-800 rounded-lg shadow-xl max-w-md w-full">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add YouTube Video</h3>
                 <button
                   onClick={() => setShowYouTubeModal(false)}
-                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  Cancel
+                  <X className="w-5 h-5" />
                 </button>
+              </div>
+
+              <div className="p-4">
+                {/* URL Input */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    YouTube URL
+                  </label>
+                  <input
+                    type="text"
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-700 dark:text-white"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleYouTubeSubmit();
+                      }
+                    }}
+                  />
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Paste any YouTube video URL (youtube.com, youtu.be, etc.)
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleYouTubeSubmit}
+                    className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                  >
+                    Add Video
+                  </button>
+                  <button
+                    onClick={() => setShowYouTubeModal(false)}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-700 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+        )}
+
+        {/* Toolbar - Scrollable on mobile */}
+        <div className="flex items-center gap-1 px-2 sm:px-4 py-2 border-b border-gray-200 dark:border-dark-800 bg-gray-50/80 dark:bg-dark-900/80 backdrop-blur-sm overflow-x-auto scrollbar-hide shrink-0">
+          {/* Text Formatting */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              isActive={editor.isActive('bold')}
+              title="Bold (⌘B)"
+            >
+              <Bold className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              isActive={editor.isActive('italic')}
+              title="Italic (⌘I)"
+            >
+              <Italic className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              isActive={editor.isActive('strike')}
+              title="Strikethrough"
+            >
+              <Strikethrough className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleCode().run()}
+              isActive={editor.isActive('code')}
+              title="Inline Code"
+            >
+              <Code className="w-4 h-4" />
+            </MenuButton>
+          </div>
+
+          <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
+
+          {/* Headings */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              isActive={editor.isActive('heading', { level: 1 })}
+              title="Heading 1"
+            >
+              <Heading1 className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              isActive={editor.isActive('heading', { level: 2 })}
+              title="Heading 2"
+            >
+              <Heading2 className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              isActive={editor.isActive('heading', { level: 3 })}
+              title="Heading 3"
+            >
+              <Heading3 className="w-4 h-4" />
+            </MenuButton>
+          </div>
+
+          <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
+
+          {/* Lists */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              isActive={editor.isActive('bulletList')}
+              title="Bullet List"
+            >
+              <List className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              isActive={editor.isActive('orderedList')}
+              title="Numbered List"
+            >
+              <ListOrdered className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleTaskList().run()}
+              isActive={editor.isActive('taskList')}
+              title="Task List"
+            >
+              <CheckSquare className="w-4 h-4" />
+            </MenuButton>
+          </div>
+
+          <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
+
+          {/* Blocks */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleBlockquote().run()}
+              isActive={editor.isActive('blockquote')}
+              title="Quote"
+            >
+              <Quote className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+              isActive={editor.isActive('codeBlock')}
+              title="Code Block"
+            >
+              <Code2 className="w-4 h-4" />
+            </MenuButton>
+          </div>
+
+          <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
+
+          {/* Media */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <MenuButton onClick={addImage} title="Add Image">
+              <ImageIcon className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton onClick={addYouTube} title="Add YouTube Video">
+              <Youtube className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={setLink}
+              isActive={editor.isActive('link')}
+              title="Add Link"
+            >
+              <LinkIcon className="w-4 h-4" />
+            </MenuButton>
+          </div>
+
+          <div className="flex-1 min-w-2" />
+
+          {/* Undo/Redo */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <MenuButton
+              onClick={() => editor.chain().focus().undo().run()}
+              disabled={!editor.can().undo()}
+              title="Undo (⌘Z)"
+            >
+              <Undo className="w-4 h-4" />
+            </MenuButton>
+            <MenuButton
+              onClick={() => editor.chain().focus().redo().run()}
+              disabled={!editor.can().redo()}
+              title="Redo (⌘⇧Z)"
+            >
+              <Redo className="w-4 h-4" />
+            </MenuButton>
+          </div>
         </div>
-      )}
 
-      {/* Toolbar - Scrollable on mobile */}
-      <div className="flex items-center gap-1 px-2 sm:px-4 py-2 border-b border-gray-200 dark:border-dark-800 bg-gray-50/80 dark:bg-dark-900/80 backdrop-blur-sm overflow-x-auto scrollbar-hide shrink-0">
-        {/* Text Formatting */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            isActive={editor.isActive('bold')}
-            title="Bold (⌘B)"
-          >
-            <Bold className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            isActive={editor.isActive('italic')}
-            title="Italic (⌘I)"
-          >
-            <Italic className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            isActive={editor.isActive('strike')}
-            title="Strikethrough"
-          >
-            <Strikethrough className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleCode().run()}
-            isActive={editor.isActive('code')}
-            title="Inline Code"
-          >
-            <Code className="w-4 h-4" />
-          </MenuButton>
-        </div>
-
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
-
-        {/* Headings */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            isActive={editor.isActive('heading', { level: 1 })}
-            title="Heading 1"
-          >
-            <Heading1 className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            isActive={editor.isActive('heading', { level: 2 })}
-            title="Heading 2"
-          >
-            <Heading2 className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            isActive={editor.isActive('heading', { level: 3 })}
-            title="Heading 3"
-          >
-            <Heading3 className="w-4 h-4" />
-          </MenuButton>
-        </div>
-
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
-
-        {/* Lists */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            isActive={editor.isActive('bulletList')}
-            title="Bullet List"
-          >
-            <List className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            isActive={editor.isActive('orderedList')}
-            title="Numbered List"
-          >
-            <ListOrdered className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleTaskList().run()}
-            isActive={editor.isActive('taskList')}
-            title="Task List"
-          >
-            <CheckSquare className="w-4 h-4" />
-          </MenuButton>
-        </div>
-
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
-
-        {/* Blocks */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            isActive={editor.isActive('blockquote')}
-            title="Quote"
-          >
-            <Quote className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            isActive={editor.isActive('codeBlock')}
-            title="Code Block"
-          >
-            <Code2 className="w-4 h-4" />
-          </MenuButton>
-        </div>
-
-        <div className="w-px h-6 bg-gray-200 dark:bg-dark-600 mx-0.5 sm:mx-1 shrink-0" />
-
-        {/* Media */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <MenuButton onClick={addImage} title="Add Image">
-            <ImageIcon className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton onClick={addYouTube} title="Add YouTube Video">
-            <Youtube className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={setLink}
-            isActive={editor.isActive('link')}
-            title="Add Link"
-          >
-            <LinkIcon className="w-4 h-4" />
-          </MenuButton>
-        </div>
-
-        <div className="flex-1 min-w-2" />
-
-        {/* Undo/Redo */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <MenuButton
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!editor.can().undo()}
-            title="Undo (⌘Z)"
-          >
-            <Undo className="w-4 h-4" />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!editor.can().redo()}
-            title="Redo (⌘⇧Z)"
-          >
-            <Redo className="w-4 h-4" />
-          </MenuButton>
+        {/* Editor Content */}
+        <div className="flex-1 overflow-y-auto pt-4 sm:pt-6">
+          <EditorContent editor={editor} className="h-full" />
         </div>
       </div>
-
-      {/* Editor Content */}
-      <div className="flex-1 overflow-y-auto pt-4 sm:pt-6">
-        <EditorContent editor={editor} className="h-full" />
-      </div>
-    </div>
+    </ImagePopupContext.Provider>
   );
 };
 
