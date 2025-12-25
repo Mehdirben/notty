@@ -107,12 +107,12 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.stopPropagation();
             onToggleFavorite?.(note._id);
           }}
-          className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isFavorite
+          className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isFavorite
             ? 'bg-yellow-500/20 text-yellow-500'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-yellow-500'
             }`}
         >
-          <Star className={`w-4 h-4 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
+          <Star className={`w-4 h-4 sm:w-5 sm:h-5 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
         </button>
         <button
           onClick={(e) => {
@@ -120,12 +120,12 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.stopPropagation();
             onTogglePin?.(note._id);
           }}
-          className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isPinned
+          className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${note.isPinned
             ? 'bg-primary-500/20 text-primary-500'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-primary-500'
             }`}
         >
-          <Pin className="w-4 h-4" />
+          <Pin className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
         <button
           ref={menuButtonRef}
@@ -134,12 +134,12 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
             e.stopPropagation();
             setShowMenu(!showMenu);
           }}
-          className={`w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${showMenu
+          className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg backdrop-blur-sm transition-all duration-200 ${showMenu
             ? 'bg-primary-500/20 text-primary-500'
             : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400'
             }`}
         >
-          <MoreHorizontal className="w-4 h-4" />
+          <MoreHorizontal className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
 

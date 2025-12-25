@@ -83,9 +83,9 @@ const NotebookCard = ({ notebook, onEdit, onDelete }) => {
             e.preventDefault();
             setShowMenu(!showMenu);
           }}
-          className="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg transition-all"
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg transition-all"
         >
-          <MoreHorizontal className="w-4 h-4 text-gray-500 dark:text-white" />
+          <MoreHorizontal className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-white" />
         </button>
 
         {/* Dropdown Menu */}
