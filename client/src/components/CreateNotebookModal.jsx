@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -11,30 +11,44 @@ const COLORS = [
   '#22c55e', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6'
 ];
 
-const CreateNotebookModal = ({ isOpen, onClose }) => {
+const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
+  const isEditMode = !!notebook;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('📓');
   const [color, setColor] = useState('#6366f1');
-  const { createNotebook, isLoading } = useNotebookStore();
+  const { createNotebook, updateNotebook, isLoading } = useNotebookStore();
+
+  useEffect(() => {
+    if (notebook) {
+      setTitle(notebook.title || '');
+      setDescription(notebook.description || '');
+      setIcon(notebook.icon || '📓');
+      setColor(notebook.color || '#6366f1');
+    } else {
+      setTitle('');
+      setDescription('');
+      setIcon('📓');
+      setColor('#6366f1');
+    }
+  }, [notebook, isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
       toast.error('Please enter a title');
       return;
     }
 
-    const result = await createNotebook({ title, description, icon, color });
-    
+    const data = { title, description, icon, color };
+    const result = isEditMode
+      ? await updateNotebook(notebook._id, data)
+      : await createNotebook(data);
+
     if (result.success) {
-      toast.success('Notebook created!');
+      toast.success(isEditMode ? 'Notebook updated!' : 'Notebook created!');
       onClose();
-      setTitle('');
-      setDescription('');
-      setIcon('📓');
-      setColor('#6366f1');
     } else {
       toast.error(result.error);
     }
@@ -67,14 +81,14 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
               <div className="flex justify-center py-3 sm:hidden">
                 <div className="w-10 h-1 bg-gray-300 dark:bg-dark-600 rounded-full" />
               </div>
-              
+
               {/* Header */}
               <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-dark-700">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary-500/20 rounded-lg">
                     <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400" />
                   </div>
-                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Create Notebook</h2>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">{isEditMode ? 'Edit Notebook' : 'Create Notebook'}</h2>
                 </div>
                 <button
                   onClick={onClose}
@@ -88,7 +102,7 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
               <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 {/* Preview */}
                 <div className="flex items-center justify-center">
-                  <div 
+                  <div
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-3xl sm:text-4xl"
                     style={{ backgroundColor: `${color}20`, borderColor: color, borderWidth: 2 }}
                   >
@@ -129,11 +143,10 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
                         key={i}
                         type="button"
                         onClick={() => setIcon(i)}
-                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl transition-all ${
-                          icon === i 
-                            ? 'bg-primary-500/20 ring-2 ring-primary-500' 
-                            : 'bg-gray-100 dark:bg-dark-800 hover:bg-gray-200 dark:hover:bg-dark-700 active:scale-95'
-                        }`}
+                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl transition-all ${icon === i
+                          ? 'bg-primary-500/20 ring-2 ring-primary-500'
+                          : 'bg-gray-100 dark:bg-dark-800 hover:bg-gray-200 dark:hover:bg-dark-700 active:scale-95'
+                          }`}
                       >
                         {i}
                       </button>
@@ -150,9 +163,8 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
                         key={c}
                         type="button"
                         onClick={() => setColor(c)}
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full transition-all active:scale-90 ${
-                          color === c ? 'ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900' : ''
-                        }`}
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full transition-all active:scale-90 ${color === c ? 'ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900' : ''
+                          }`}
                         style={{ backgroundColor: c }}
                       />
                     ))}
@@ -168,7 +180,7 @@ const CreateNotebookModal = ({ isOpen, onClose }) => {
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
                   ) : (
-                    'Create Notebook'
+                    isEditMode ? 'Update Notebook' : 'Create Notebook'
                   )}
                 </button>
               </form>

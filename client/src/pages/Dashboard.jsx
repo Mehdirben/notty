@@ -12,8 +12,9 @@ import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingNotebook, setEditingNotebook] = useState(null);
   const { user } = useAuthStore();
-  const { notebooks, fetchNotebooks, deleteNotebook, updateNotebook } = useNotebookStore();
+  const { notebooks, fetchNotebooks, deleteNotebook } = useNotebookStore();
   const { notes, fetchNotes, toggleFavorite, togglePin, deleteNote } = useNoteStore();
 
   useEffect(() => {
@@ -32,15 +33,10 @@ const Dashboard = () => {
     }
   };
 
-  const handleArchiveNotebook = async (notebook) => {
-    const result = await updateNotebook(notebook._id, { isArchived: true });
-    if (result.success) {
-      toast.success('Notebook archived');
-    } else {
-      toast.error(result.error);
-    }
+  const handleEditNotebook = (notebook) => {
+    setEditingNotebook(notebook);
+    setIsCreateModalOpen(true);
   };
-
   const handleDeleteNote = async (id) => {
     if (window.confirm('Delete this note?')) {
       const result = await deleteNote(id);
@@ -60,7 +56,7 @@ const Dashboard = () => {
     <Layout>
       <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-6 lg:mb-8"
@@ -72,7 +68,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Stats */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -114,7 +110,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Notebooks Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -138,8 +134,8 @@ const Dashboard = () => {
                 <NotebookCard
                   key={notebook._id}
                   notebook={notebook}
+                  onEdit={handleEditNotebook}
                   onDelete={handleDeleteNotebook}
-                  onArchive={handleArchiveNotebook}
                 />
               ))}
             </div>
@@ -162,7 +158,7 @@ const Dashboard = () => {
 
         {/* Recent Notes Section */}
         {recentNotes.length > 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -185,10 +181,14 @@ const Dashboard = () => {
           </motion.div>
         )}
 
-        {/* Create Notebook Modal */}
-        <CreateNotebookModal 
+        {/* Create/Edit Notebook Modal */}
+        <CreateNotebookModal
           isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
+          onClose={() => {
+            setIsCreateModalOpen(false);
+            setEditingNotebook(null);
+          }}
+          notebook={editingNotebook}
         />
       </div>
     </Layout>
