@@ -14,14 +14,14 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error('Please fill in all fields');
       return;
     }
 
     const result = await login(email, password);
-    
+
     if (result.success) {
       toast.success('Welcome back!');
       navigate('/dashboard');
@@ -31,7 +31,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white flex pt-safe">
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary-600/20 via-transparent to-transparent rounded-full blur-3xl" />

@@ -39,20 +39,42 @@ html:not(.dark) {
   color-scheme: light;
 }
 
-/* iOS Safe Area Support */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+/* iOS/Android Safe Area Support */
+/* env() gracefully degrades to 0 on unsupported browsers */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 
-  .pt-safe {
-    padding-top: env(safe-area-inset-top);
-  }
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
 
-  .px-safe {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
+.px-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mt-safe {
+  margin-top: env(safe-area-inset-top, 0px);
+}
+
+/* Combined padding for content above mobile nav (nav height + safe area) */
+.pb-nav-safe {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Safe viewport height accounting for both top and bottom safe areas */
+.min-h-screen-safe {
+  min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+}
+
+/* Safe viewport height with dynamic viewport units (iOS Safari) */
+.min-h-dvh-safe {
+  min-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
 }
 
 /* Mobile-first touch improvements */

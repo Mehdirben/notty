@@ -16,7 +16,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password || !confirmPassword) {
       toast.error('Please fill in all fields');
       return;
@@ -33,7 +33,7 @@ const RegisterPage = () => {
     }
 
     const result = await register(name, email, password);
-    
+
     if (result.success) {
       toast.success('Account created successfully!');
       navigate('/dashboard');
@@ -43,7 +43,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-950 text-gray-900 dark:text-white flex pt-safe">
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-primary-600/20 via-transparent to-transparent rounded-full blur-3xl" />
@@ -169,7 +169,7 @@ const RegisterPage = () => {
 
           <p className="text-center text-sm sm:text-base text-gray-500 dark:text-dark-400 mt-6 sm:mt-8">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary-500 hover:text-primary-400 active:text-primary-300 font-medium">
+            <Link to="/" className="text-primary-500 hover:text-primary-400 active:text-primary-300 font-medium">
               Sign in
             </Link>
           </p>
