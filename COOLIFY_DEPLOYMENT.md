@@ -6,13 +6,13 @@ This guide explains how to deploy the Notty note-taking application on [Coolify]
 
 Before deploying, be aware of these common issues:
 
-| Issue | Solution |
-|-------|----------|
-| **Bad Gateway** | Set correct **Ports Exposes**: Frontend = `80`, Backend = `5000` |
-| **Frontend can't reach API** | Set `VITE_API_URL` to backend URL **without** `/api` suffix, then **Rebuild** |
-| **Login "Server Error"** | Add `JWT_EXPIRE=7d` environment variable to backend |
-| **Changes not taking effect** | Use **Rebuild** not just Redeploy (Coolify caches images) |
-| **Healthcheck failing** | Already fixed in Dockerfile - uses `127.0.0.1` instead of `localhost` |
+| Issue                          | Solution                                                                      |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| **Bad Gateway**                | Set correct **Ports Exposes**: Frontend = `80`, Backend = `5000`              |
+| **Frontend can't reach API**   | Set `VITE_API_URL` to backend URL **without** `/api` suffix, then **Rebuild** |
+| **Login "Server Error"**       | Add `JWT_EXPIRE=7d` environment variable to backend                           |
+| **Changes not taking effect**  | Use **Rebuild** not just Redeploy (Coolify caches images)                     |
+| **Healthcheck failing**        | Already fixed in Dockerfile - uses `127.0.0.1` instead of `localhost`         |
 
 ## Prerequisites
 
@@ -42,11 +42,11 @@ curl ifconfig.me
 3. Navigate to the **Advanced DNS** tab
 4. Add the following A Records:
 
-| Type | Host | Value | TTL | Purpose |
-|------|------|-------|-----|---------|
-| A Record | `@` | `YOUR_COOLIFY_IP` | Automatic | Main frontend (`yourdomain.com`) |
-| A Record | `www` | `YOUR_COOLIFY_IP` | Automatic | WWW subdomain (`www.yourdomain.com`) |
-| A Record | `api` | `YOUR_COOLIFY_IP` | Automatic | Backend API (`api.yourdomain.com`) |
+| Type     | Host      | Value             | TTL       | Purpose                                      |
+| -------- | --------- | ----------------- | --------- | -------------------------------------------- |
+| A Record | `@`       | `YOUR_COOLIFY_IP` | Automatic | Main frontend (`yourdomain.com`)             |
+| A Record | `www`     | `YOUR_COOLIFY_IP` | Automatic | WWW subdomain (`www.yourdomain.com`)         |
+| A Record | `api`     | `YOUR_COOLIFY_IP` | Automatic | Backend API (`api.yourdomain.com`)           |
 | A Record | `coolify` | `YOUR_COOLIFY_IP` | Automatic | Coolify Dashboard (`coolify.yourdomain.com`) |
 
 > **Note**: Replace `YOUR_COOLIFY_IP` with your actual server IP address.
@@ -55,7 +55,7 @@ curl ifconfig.me
 
 After DNS propagation (may take up to 48 hours, usually much faster):
 
-**Option A: Via SSH**
+#### Option A: Via SSH
 
 ```bash
 # Edit the Coolify environment file
@@ -70,7 +70,7 @@ docker compose down
 docker compose up -d
 ```
 
-**Option B: Via Coolify UI**
+#### Option B: Via Coolify UI
 
 1. Access Coolify dashboard using your server IP
 2. Navigate to **Settings** → **Configuration**
@@ -108,11 +108,11 @@ Check if your DNS records have propagated:
 
 ### Domain Summary
 
-| Domain | Service | Port |
-|--------|---------|------|
-| `yourdomain.com` | Frontend (Nginx) | 80 |
-| `www.yourdomain.com` | Frontend (Nginx) | 80 |
-| `api.yourdomain.com` | Backend (Node.js) | 5000 |
+| Domain                   | Service           | Port |
+| ------------------------ | ----------------- | ---- |
+| `yourdomain.com`         | Frontend (Nginx)  | 80   |
+| `www.yourdomain.com`     | Frontend (Nginx)  | 80   |
+| `api.yourdomain.com`     | Backend (Node.js) | 5000 |
 | `coolify.yourdomain.com` | Coolify Dashboard | 8000 |
 
 ## Architecture Overview
@@ -123,7 +123,7 @@ The Notty application consists of three components:
 2. **Backend** - Node.js/Express API server
 3. **Frontend** - React application served via Nginx
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                         Coolify                             │
 ├─────────────────────────────────────────────────────────────┤
@@ -210,13 +210,13 @@ volumes:
 
 Set the following environment variables in Coolify:
 
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `NODE_ENV` | Environment mode | `production` | Yes |
-| `PORT` | Server port | `5000` | Yes |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://user:pass@notty-mongodb:27017/notty?authSource=admin` | Yes |
-| `JWT_SECRET` | Secret for JWT tokens | Generate a secure random string (32+ chars) | Yes |
-| `JWT_EXPIRE` | Token expiration time | `7d` (7 days), `30d`, `24h` | Yes |
+| Variable      | Description                   | Example                                                          | Required |
+| ------------- | ----------------------------- | ---------------------------------------------------------------- | -------- |
+| `NODE_ENV`    | Environment mode              | `production`                                                     | Yes      |
+| `PORT`        | Server port                   | `5000`                                                           | Yes      |
+| `MONGODB_URI` | MongoDB connection string     | `mongodb://user:pass@notty-mongodb:27017/notty?authSource=admin` | Yes      |
+| `JWT_SECRET`  | Secret for JWT tokens         | Generate a secure random string (32+ chars)                      | Yes      |
+| `JWT_EXPIRE`  | Token expiration time         | `7d` (7 days), `30d`, `24h`                                      | Yes      |
 
 > **Tip**: Use Coolify's magic variables for passwords: `${SERVICE_PASSWORD_64_BACKEND}` to auto-generate a secure JWT secret.
 
@@ -243,9 +243,9 @@ Set the following environment variables in Coolify:
 
 ### Environment Variables for Frontend (Build-time)
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend base URL (without `/api`) | `https://api.notty.yourdomain.com` |
+| Variable       | Description                         | Example                             |
+| -------------- | ----------------------------------- | ----------------------------------- |
+| `VITE_API_URL` | Backend base URL (without `/api`)   | `https://api.notty.yourdomain.com`  |
 
 > **Important**:
 >
@@ -253,7 +253,7 @@ Set the following environment variables in Coolify:
 > - This is a **build argument**, not a runtime environment variable. Set it in the Environment Variables section in Coolify.
 > - After changing this value, you must **Rebuild** (not just Redeploy) for changes to take effect.
 
-### Configuring the Domain and Port
+### Configuring Frontend Domain and Port
 
 1. In the frontend resource settings, go to **Settings**
 2. **Important**: Set **Ports Exposes** to `80` (Nginx serves on port 80, not 3000)
@@ -367,13 +367,13 @@ volumes:
 
 ### Environment Variables for Complete Stack
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend API URL for frontend | `https://api.notty.yourdomain.com` |
-| `MONGODB_URI` | Full MongoDB connection string | `mongodb://notty:password@mongodb:27017/notty?authSource=admin` |
-| `JWT_SECRET` | Secret for JWT tokens | (generate secure string) |
-| `MONGO_USER` | MongoDB root username | `notty` |
-| `MONGO_PASSWORD` | MongoDB root password | (generate secure string) |
+| Variable         | Description                    | Example                                                            |
+| ---------------- | ------------------------------ | ------------------------------------------------------------------ |
+| `VITE_API_URL`   | Backend API URL for frontend   | `https://api.notty.yourdomain.com`                                 |
+| `MONGODB_URI`    | Full MongoDB connection string | `mongodb://notty:pass@mongodb:27017/notty?authSource=admin`        |
+| `JWT_SECRET`     | Secret for JWT tokens          | (generate secure string)                                           |
+| `MONGO_USER`     | MongoDB root username          | `notty`                                                            |
+| `MONGO_PASSWORD` | MongoDB root password          | (generate secure string)                                           |
 
 ---
 
