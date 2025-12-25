@@ -20,11 +20,11 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       whileTap={{ scale: 0.98 }}
-      className="note-item relative group"
+      className={`note-item relative group ${showMenu ? 'menu-open' : ''}`}
     >
       <Link
         to={`/note/${note._id}`}
-        className="block p-3 sm:p-4 bg-white dark:bg-dark-800/30 border border-gray-200 dark:border-dark-700/50 rounded-xl hover:border-gray-300 dark:hover:border-dark-600 active:bg-gray-50 dark:active:bg-dark-800/50 transition-all shadow-sm dark:shadow-none"
+        className="note-card-link block p-4 sm:p-5 bg-gradient-to-br from-white to-gray-50/80 dark:from-dark-800/60 dark:to-dark-900/40 border border-gray-200/60 dark:border-dark-700/40 rounded-2xl transition-all duration-300 shadow-sm dark:shadow-lg dark:shadow-black/10"
       >
         {/* Header */}
         <div className="flex items-start gap-2 sm:gap-3 mb-2">
@@ -78,65 +78,82 @@ const NoteCard = ({ note, onToggleFavorite, onTogglePin, onDelete, index = 0 }) 
       </Link>
 
       {/* Quick Actions */}
-      <div className="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className={`absolute top-3 right-3 flex items-center gap-1.5 transition-all duration-200 ${showMenu ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
         <button
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onToggleFavorite?.(note._id);
           }}
-          className={`p-1.5 rounded-lg transition-colors ${
-            note.isFavorite 
-              ? 'bg-yellow-500/20 text-yellow-500' 
-              : 'bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 text-gray-400 dark:text-dark-400'
-          }`}
+          className={`p-2 rounded-xl backdrop-blur-sm transition-all duration-200 ${note.isFavorite
+            ? 'bg-yellow-500/20 text-yellow-500 shadow-sm shadow-yellow-500/20'
+            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-yellow-500 shadow-sm'
+            }`}
         >
-          <Star className={`w-3.5 h-3.5 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
+          <Star className={`w-4 h-4 ${note.isFavorite ? 'fill-yellow-400' : ''}`} />
         </button>
         <button
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onTogglePin?.(note._id);
           }}
-          className={`p-1.5 rounded-lg transition-colors ${
-            note.isPinned 
-              ? 'bg-primary-500/20 text-primary-500' 
-              : 'bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 text-gray-400 dark:text-dark-400'
-          }`}
+          className={`p-2 rounded-xl backdrop-blur-sm transition-all duration-200 ${note.isPinned
+            ? 'bg-primary-500/20 text-primary-500 shadow-sm shadow-primary-500/20'
+            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400 hover:text-primary-500 shadow-sm'
+            }`}
         >
-          <Pin className="w-3.5 h-3.5" />
+          <Pin className="w-4 h-4" />
         </button>
         <button
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             setShowMenu(!showMenu);
           }}
-          className="p-1.5 bg-gray-100 dark:bg-dark-700/80 hover:bg-gray-200 dark:hover:bg-dark-600 rounded-lg text-gray-400 dark:text-dark-400 transition-colors"
+          className={`p-2 rounded-xl backdrop-blur-sm transition-all duration-200 shadow-sm ${showMenu
+            ? 'bg-primary-500/20 text-primary-500'
+            : 'bg-white/80 dark:bg-dark-700/80 hover:bg-white dark:hover:bg-dark-600 text-gray-500 dark:text-dark-400'
+            }`}
         >
-          <MoreHorizontal className="w-3.5 h-3.5" />
+          <MoreHorizontal className="w-4 h-4" />
         </button>
-
-        {/* Dropdown Menu */}
-        {showMenu && (
-          <>
-            <div 
-              className="fixed inset-0 z-10" 
-              onClick={() => setShowMenu(false)} 
-            />
-            <div className="absolute right-0 top-8 w-40 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl shadow-xl z-20 overflow-hidden">
-              <button
-                onClick={() => {
-                  onDelete?.(note._id);
-                  setShowMenu(false);
-                }}
-                className="flex items-center gap-2 w-full px-3 py-2 hover:bg-red-500/10 text-red-500 transition-colors text-sm"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete</span>
-              </button>
-            </div>
-          </>
-        )}
       </div>
+
+      {/* Dropdown Menu - Outside the hover group */}
+      {showMenu && (
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowMenu(false);
+            }}
+            onMouseOver={(e) => e.stopPropagation()}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-3 top-12 w-44 bg-white/95 dark:bg-dark-800/95 backdrop-blur-xl border border-gray-200/80 dark:border-dark-600/50 rounded-xl shadow-xl shadow-black/10 dark:shadow-black/30 z-50 overflow-hidden"
+          >
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete?.(note._id);
+                setShowMenu(false);
+              }}
+              className="flex items-center gap-3 w-full px-4 py-3 hover:bg-red-500/10 text-red-500 transition-colors text-sm font-medium"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Delete Note</span>
+            </button>
+          </motion.div>
+        </>
+      )}
     </motion.div>
   );
 };
