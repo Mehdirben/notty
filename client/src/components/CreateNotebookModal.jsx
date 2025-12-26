@@ -64,7 +64,9 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            onTouchMove={(e) => e.preventDefault()}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            style={{ touchAction: 'none' }}
           />
 
           {/* Modal */}
@@ -74,7 +76,9 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
             exit={{ opacity: 0, y: 50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-x-0 bottom-0 sm:inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
+            style={{ touchAction: 'none' }}
             onClick={(e) => e.target === e.currentTarget && onClose()}
+            onTouchMove={(e) => e.stopPropagation()}
           >
             <div className="bg-white dark:bg-dark-900 border-t sm:border border-gray-200 dark:border-dark-700 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden w-full sm:max-w-md max-h-[90vh] overflow-y-auto">
               {/* Drag Handle - Mobile only */}

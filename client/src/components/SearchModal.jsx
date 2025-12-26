@@ -66,7 +66,9 @@ const SearchModal = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSearchOpen(false)}
+            onTouchMove={(e) => e.preventDefault()}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            style={{ touchAction: 'none' }}
           />
 
           {/* Modal */}
@@ -75,8 +77,9 @@ const SearchModal = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             className="fixed inset-x-0 top-0 z-50 flex items-start justify-center pt-safe px-3 sm:px-4 pb-safe"
-            style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
+            style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)', touchAction: 'none' }}
             onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
+            onTouchMove={(e) => e.stopPropagation()}
           >
             <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[85vh] sm:max-h-[70vh] flex flex-col">
               {/* Search Input */}
