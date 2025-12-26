@@ -1137,6 +1137,12 @@ The dashboard is your workspace for managing notes. Use the **left sidebar** to 
 
 Click on any note to open the editor. Use the **toolbar** to format your text: apply **H1/H2/H3** headings, make text **bold** (Ctrl+B), *italic* (Ctrl+I), or underlined (Ctrl+U). Create bullet lists, numbered lists, or task lists with checkboxes. Insert code blocks with syntax highlighting for technical notes, and add images by clicking the image icon or dragging files directly into the editor. Your notes **auto-save** as you type, so you never lose your work.
 
+### Coolify Deployment Dashboard
+
+![Coolify Dashboard](assets/coolify-dashboard.png)
+
+The Coolify dashboard provides a powerful interface for managing your Notty deployment. From here, you can monitor your application's status, view logs, manage environment variables, and configure custom domains. Coolify simplifies the deployment process by providing Git-based continuous deployment, automatic SSL certificates via Let's Encrypt, and easy scaling options. This self-hosted solution gives you full control over your infrastructure while maintaining the simplicity of platform-as-a-service solutions.
+
 ---
 
 ## Installation
