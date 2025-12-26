@@ -985,6 +985,130 @@ volumes:
 | JWT_EXPIRE   | Token expiration duration   | 7d                      |
 | VITE_API_URL | API URL for frontend        | `http://localhost:5000` |
 
+### Coolify Deployment Guide
+
+Coolify provides a complete self-hosted Platform-as-a-Service solution for deploying Notty. This section details the installation, architecture, and deployment process.
+
+#### VPS Prerequisites
+
+Before installing Coolify, ensure your VPS meets these requirements:
+
+- **Operating System**: Ubuntu 22.04 LTS (recommended), Debian 11+, or CentOS 8+
+- **Minimum Resources**: 2 CPU cores, 2GB RAM, 30GB storage
+- **Root Access**: SSH access with root or sudo privileges
+- **Open Ports**: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8000 (Coolify UI)
+- **Domain**: A domain name pointing to your VPS IP (optional but recommended)
+
+#### Coolify Installation
+
+Install Coolify on your VPS with a single command:
+
+```bash
+# SSH into your VPS
+ssh root@your-server-ip
+
+# Run the official Coolify installer
+curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
+
+# The installer will:
+# - Install Docker and Docker Compose
+# - Set up Coolify containers
+# - Configure the reverse proxy (Traefik)
+# - Start the Coolify dashboard on port 8000
+```
+
+After installation completes:
+
+1. Access Coolify at `http://your-server-ip:8000`
+2. Create your admin account on first visit
+3. Configure your server settings and add SSH keys if needed
+
+#### Deployment Architecture
+
+```text
+┌─────────────────┐       API Calls       ┌─────────────────┐      Mongoose      ┌─────────────────┐
+│    Frontend     │ ────────────────────▶ │     Backend     │ ─────────────────▶ │    MongoDB      │
+│  (Nginx :80)    │                       │ (Node.js :5000) │                    │    (:27017)     │
+└─────────────────┘                       └─────────────────┘                    └─────────────────┘
+   notty.domain.com                         api.domain.com
+```
+
+#### Step-by-Step Deployment
+
+1. **Deploy MongoDB Database**
+   - Create a new Database resource in Coolify (MongoDB 7.0)
+   - Enable `Connect to Predefined Network`
+   - Note the connection string: `mongodb://user:pass@mongodb:27017/notty`
+
+2. **Deploy Backend Service**
+   - Connect Git repository (Branch: `main`)
+   - Build Pack: Dockerfile, Location: `server/Dockerfile`
+   - Set **Ports Exposes** to `5000`
+   - Configure domain: `https://api.yourdomain.com`
+
+3. **Deploy Frontend Service**
+   - Connect Git repository (Branch: `main`)
+   - Build Pack: Dockerfile, Location: `client/Dockerfile`
+   - Set **Ports Exposes** to `80` (Nginx)
+   - Configure domain: `https://yourdomain.com`
+
+#### Custom Domain Configuration (Namecheap)
+
+To connect a custom domain, configure DNS A records in Namecheap:
+
+| Type     | Host    | Value     | Purpose                  |
+| -------- | ------- | --------- | ------------------------ |
+| A Record | @       | Server IP | Frontend (yourdomain.com)|
+| A Record | www     | Server IP | WWW redirect             |
+| A Record | api     | Server IP | Backend API              |
+| A Record | coolify | Server IP | Coolify Dashboard        |
+
+**Domain Propagation**: DNS changes may take up to 48 hours to propagate globally. Use [whatsmydns.net](https://www.whatsmydns.net/) to verify propagation status.
+
+#### Common Pitfalls & Solutions
+
+| Issue | Solution |
+| --- | --- |
+| Bad Gateway | Set correct Ports Exposes: Frontend = 80, Backend = 5000 |
+| Frontend can't reach API | Set `VITE_API_URL` without `/api` suffix, then **Rebuild** |
+| Login "Server Error" | Add `JWT_EXPIRE=7d` environment variable to backend |
+| Changes not taking effect | Use **Rebuild** not Redeploy (Coolify caches images) |
+
+### Backup & Disaster Recovery
+
+Data backup is critical for any production deployment. Coolify provides multiple backup strategies for MongoDB databases.
+
+#### Coolify Database Backups
+
+Coolify offers built-in backup functionality for database resources:
+
+1. **Navigate to MongoDB Resource** → **Backups** tab
+2. **Enable Scheduled Backups**:
+   - Configure backup frequency (daily, weekly, or custom cron)
+   - Set retention policy (number of backups to keep)
+   - Choose backup destination (local, S3, or external storage)
+3. **Manual Backups**: Click "Create Backup Now" for immediate backup
+4. **Restore**: Select any backup point and click "Restore" to recover data
+
+#### Backup Storage Options
+
+| Storage Type  | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| Local Storage | Backups stored on the Coolify server (default)       |
+| S3 Compatible | AWS S3, DigitalOcean Spaces, MinIO, Backblaze B2     |
+| SFTP/SSH      | Remote server via secure file transfer               |
+
+#### Volume Persistence
+
+Ensure persistent storage is configured for both MongoDB data and user uploads:
+
+| Service | Volume Name   | Container Path |
+| ------- | ------------- | -------------- |
+| MongoDB | mongodb_data  | /data/db       |
+| Backend | notty-uploads | /app/uploads   |
+
+These volumes survive container restarts and redeployments, ensuring data persistence across updates.
+
 ---
 
 ## Screenshots
