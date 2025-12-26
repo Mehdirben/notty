@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useNotebookStore from '../store/notebookStore';
-import useBodyScrollLock from '../hooks/useBodyScrollLock';
 
 const ICONS = ['📓', '📕', '📗', '📘', '📙', '💼', '💡', '🎯', '🚀', '✨', '📝', '🎨', '🔬', '📊', '🎵', '❤️'];
 const COLORS = [
@@ -19,9 +18,6 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
   const [icon, setIcon] = useState('📓');
   const [color, setColor] = useState('#6366f1');
   const { createNotebook, updateNotebook, isLoading } = useNotebookStore();
-
-  // Lock body scroll when modal is open (fixes iOS touch passthrough)
-  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (notebook) {
@@ -68,29 +64,19 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            onTouchStart={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.preventDefault()}
-            onTouchEnd={(e) => e.stopPropagation()}
-            className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="modal-backdrop fixed inset-x-0 bottom-0 sm:inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 pb-20 sm:pb-4"
             onClick={(e) => e.target === e.currentTarget && onClose()}
-            onTouchStart={(e) => e.target === e.currentTarget && e.stopPropagation()}
-            onTouchMove={(e) => e.target === e.currentTarget && e.preventDefault()}
           >
-            <div className="modal-scroll-content bg-white dark:bg-dark-900 border-t sm:border border-gray-200 dark:border-dark-700 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden w-full sm:max-w-md max-h-[90vh] overflow-y-auto">
-              {/* Drag Handle - Mobile only */}
-              <div className="flex justify-center py-3 sm:hidden">
-                <div className="w-10 h-1 bg-gray-300 dark:bg-dark-600 rounded-full" />
-              </div>
-
+            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full sm:max-w-md max-h-[80vh] overflow-y-auto">
               {/* Header */}
               <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-dark-700">
                 <div className="flex items-center gap-2 sm:gap-3">

@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, FileText, BookOpen } from 'lucide-react';
 import useUIStore from '../store/uiStore';
 import useNoteStore from '../store/noteStore';
-import useBodyScrollLock from '../hooks/useBodyScrollLock';
 
 const SearchModal = () => {
   const [query, setQuery] = useState('');
@@ -13,9 +12,6 @@ const SearchModal = () => {
   const { notes, fetchNotes } = useNoteStore();
   const navigate = useNavigate();
   const inputRef = useRef(null);
-
-  // Lock body scroll when modal is open (fixes iOS touch passthrough)
-  useBodyScrollLock(isSearchOpen);
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -70,24 +66,19 @@ const SearchModal = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSearchOpen(false)}
-            onTouchStart={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.preventDefault()}
-            onTouchEnd={(e) => e.stopPropagation()}
-            className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="modal-backdrop fixed inset-x-0 top-0 z-[100] flex items-start justify-center pt-safe px-3 sm:px-4 pb-safe"
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-x-0 top-0 z-[100] flex items-start justify-center pt-safe px-3 sm:px-4"
             style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
             onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
-            onTouchStart={(e) => e.target === e.currentTarget && e.stopPropagation()}
-            onTouchMove={(e) => e.target === e.currentTarget && e.preventDefault()}
           >
-            <div className="modal-scroll-content bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[85vh] sm:max-h-[70vh] flex flex-col">
+            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[70vh] flex flex-col">
               {/* Search Input */}
               <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 border-b border-gray-200 dark:border-dark-700 shrink-0">
                 <Search className="w-5 h-5 text-gray-400 dark:text-dark-400 shrink-0" />
