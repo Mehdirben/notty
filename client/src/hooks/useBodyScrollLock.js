@@ -2,24 +2,22 @@ import { useEffect } from 'react';
 
 /**
  * Hook to lock body scroll when a modal is open
- * Uses CSS class-based approach for iOS Safari compatibility
+ * Simplified approach that works better on iOS without shifting fixed elements
  */
 const useBodyScrollLock = (isLocked) => {
     useEffect(() => {
         if (!isLocked) return;
 
-        // Store scroll position
-        const scrollY = window.scrollY;
+        // Simple overflow hidden approach - doesn't shift fixed elements
+        const originalOverflow = document.body.style.overflow;
+        const originalTouchAction = document.body.style.touchAction;
 
-        // Add class to body to lock scroll
-        document.body.classList.add('modal-open');
-        document.body.style.top = `-${scrollY}px`;
+        document.body.style.overflow = 'hidden';
+        document.body.style.touchAction = 'none';
 
         return () => {
-            // Remove class and restore scroll position
-            document.body.classList.remove('modal-open');
-            document.body.style.top = '';
-            window.scrollTo(0, scrollY);
+            document.body.style.overflow = originalOverflow;
+            document.body.style.touchAction = originalTouchAction;
         };
     }, [isLocked]);
 };
