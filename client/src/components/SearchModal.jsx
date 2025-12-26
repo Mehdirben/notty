@@ -73,7 +73,7 @@ const SearchModal = () => {
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.preventDefault()}
             onTouchEnd={(e) => e.stopPropagation()}
-            className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Modal */}
@@ -81,7 +81,7 @@ const SearchModal = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="modal-backdrop fixed inset-x-0 top-0 z-50 flex items-start justify-center pt-safe px-3 sm:px-4 pb-safe"
+            className="modal-backdrop fixed inset-x-0 top-0 z-[100] flex items-start justify-center pt-safe px-3 sm:px-4 pb-safe"
             style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
             onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
             onTouchStart={(e) => e.target === e.currentTarget && e.stopPropagation()}

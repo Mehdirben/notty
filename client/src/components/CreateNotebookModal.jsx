@@ -71,7 +71,7 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.preventDefault()}
             onTouchEnd={(e) => e.stopPropagation()}
-            className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Modal */}
@@ -80,7 +80,7 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="modal-backdrop fixed inset-x-0 bottom-0 sm:inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
+            className="modal-backdrop fixed inset-x-0 bottom-0 sm:inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4"
             onClick={(e) => e.target === e.currentTarget && onClose()}
             onTouchStart={(e) => e.target === e.currentTarget && e.stopPropagation()}
             onTouchMove={(e) => e.target === e.currentTarget && e.preventDefault()}
