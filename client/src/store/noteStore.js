@@ -43,10 +43,10 @@ const useNoteStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data } = await api.post('/notes', noteData);
-      set((state) => ({ 
-        notes: [data, ...state.notes], 
+      set((state) => ({
+        notes: [data, ...state.notes],
         currentNote: data,
-        isLoading: false 
+        isLoading: false
       }));
       return { success: true, note: data };
     } catch (error) {
@@ -92,15 +92,71 @@ const useNoteStore = create((set, get) => ({
 
   toggleFavorite: async (id) => {
     const note = get().notes.find((n) => n._id === id) || get().currentNote;
-    if (note) {
-      return get().updateNote(id, { isFavorite: !note.isFavorite });
+    if (!note) return;
+
+    const newValue = !note.isFavorite;
+
+    // Optimistic update - update UI immediately
+    set((state) => ({
+      notes: state.notes.map((n) =>
+        n._id === id ? { ...n, isFavorite: newValue } : n
+      ),
+      currentNote: state.currentNote?._id === id
+        ? { ...state.currentNote, isFavorite: newValue }
+        : state.currentNote
+    }));
+
+    // Sync with server in background
+    try {
+      await api.put(`/notes/${id}`, { isFavorite: newValue });
+      return { success: true };
+    } catch (error) {
+      // Rollback on failure
+      set((state) => ({
+        notes: state.notes.map((n) =>
+          n._id === id ? { ...n, isFavorite: !newValue } : n
+        ),
+        currentNote: state.currentNote?._id === id
+          ? { ...state.currentNote, isFavorite: !newValue }
+          : state.currentNote,
+        error: error.response?.data?.message || 'Failed to update favorite'
+      }));
+      return { success: false, error: error.response?.data?.message };
     }
   },
 
   togglePin: async (id) => {
     const note = get().notes.find((n) => n._id === id) || get().currentNote;
-    if (note) {
-      return get().updateNote(id, { isPinned: !note.isPinned });
+    if (!note) return;
+
+    const newValue = !note.isPinned;
+
+    // Optimistic update - update UI immediately
+    set((state) => ({
+      notes: state.notes.map((n) =>
+        n._id === id ? { ...n, isPinned: newValue } : n
+      ),
+      currentNote: state.currentNote?._id === id
+        ? { ...state.currentNote, isPinned: newValue }
+        : state.currentNote
+    }));
+
+    // Sync with server in background
+    try {
+      await api.put(`/notes/${id}`, { isPinned: newValue });
+      return { success: true };
+    } catch (error) {
+      // Rollback on failure
+      set((state) => ({
+        notes: state.notes.map((n) =>
+          n._id === id ? { ...n, isPinned: !newValue } : n
+        ),
+        currentNote: state.currentNote?._id === id
+          ? { ...state.currentNote, isPinned: !newValue }
+          : state.currentNote,
+        error: error.response?.data?.message || 'Failed to update pin'
+      }));
+      return { success: false, error: error.response?.data?.message };
     }
   },
 
