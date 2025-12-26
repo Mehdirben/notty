@@ -46,7 +46,7 @@ const LoginPage = () => {
           className="w-full max-w-md"
         >
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-6 sm:mb-8">
+          <Link to="/login" className="flex items-center gap-2 mb-6 sm:mb-8">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
