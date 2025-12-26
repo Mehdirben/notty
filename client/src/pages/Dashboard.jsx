@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [editingNotebook, setEditingNotebook] = useState(null);
   const { user } = useAuthStore();
   const { notebooks, fetchNotebooks, deleteNotebook } = useNotebookStore();
-  const { notes, fetchNotes, toggleFavorite, togglePin, deleteNote } = useNoteStore();
+  const { notes, fetchNotes, toggleFavorite, togglePin, deleteNote, isLoading: notesLoading } = useNoteStore();
 
   useEffect(() => {
     fetchNotebooks();
@@ -157,7 +157,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Recent Notes Section */}
-        {recentNotes.length > 0 && (
+        {(recentNotes.length > 0 || notesLoading) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -167,16 +167,37 @@ const Dashboard = () => {
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Recent Notes</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {recentNotes.map((note, index) => (
-                <NoteCard
-                  key={note._id}
-                  note={note}
-                  index={index}
-                  onToggleFavorite={toggleFavorite}
-                  onTogglePin={togglePin}
-                  onDelete={handleDeleteNote}
-                />
-              ))}
+              {notesLoading ? (
+                // Skeleton loading cards
+                [...Array(3)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="p-4 bg-white dark:bg-dark-800/50 border border-gray-200 dark:border-dark-700 rounded-xl animate-pulse"
+                  >
+                    <div className="h-5 bg-gray-200 dark:bg-dark-700 rounded w-3/4 mb-3"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-dark-700 rounded w-full mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-dark-700 rounded w-2/3 mb-4"></div>
+                    <div className="flex justify-between items-center">
+                      <div className="h-3 bg-gray-200 dark:bg-dark-700 rounded w-20"></div>
+                      <div className="flex gap-2">
+                        <div className="h-6 w-6 bg-gray-200 dark:bg-dark-700 rounded"></div>
+                        <div className="h-6 w-6 bg-gray-200 dark:bg-dark-700 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                recentNotes.map((note, index) => (
+                  <NoteCard
+                    key={note._id}
+                    note={note}
+                    index={index}
+                    onToggleFavorite={toggleFavorite}
+                    onTogglePin={togglePin}
+                    onDelete={handleDeleteNote}
+                  />
+                ))
+              )}
             </div>
           </motion.div>
         )}
