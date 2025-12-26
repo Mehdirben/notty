@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useNotebookStore from '../store/notebookStore';
+import useBodyScrollLock from '../hooks/useBodyScrollLock';
 
 const ICONS = ['📓', '📕', '📗', '📘', '📙', '💼', '💡', '🎯', '🚀', '✨', '📝', '🎨', '🔬', '📊', '🎵', '❤️'];
 const COLORS = [
@@ -18,6 +19,9 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
   const [icon, setIcon] = useState('📓');
   const [color, setColor] = useState('#6366f1');
   const { createNotebook, updateNotebook, isLoading } = useNotebookStore();
+
+  // Lock body scroll when modal is open (fixes iOS touch passthrough)
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (notebook) {
@@ -80,7 +84,7 @@ const CreateNotebookModal = ({ isOpen, onClose, notebook = null }) => {
             onClick={(e) => e.target === e.currentTarget && onClose()}
             onTouchMove={(e) => e.stopPropagation()}
           >
-            <div className="bg-white dark:bg-dark-900 border-t sm:border border-gray-200 dark:border-dark-700 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden w-full sm:max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="modal-scroll-content bg-white dark:bg-dark-900 border-t sm:border border-gray-200 dark:border-dark-700 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden w-full sm:max-w-md max-h-[90vh] overflow-y-auto">
               {/* Drag Handle - Mobile only */}
               <div className="flex justify-center py-3 sm:hidden">
                 <div className="w-10 h-1 bg-gray-300 dark:bg-dark-600 rounded-full" />

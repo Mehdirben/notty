@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, FileText, BookOpen } from 'lucide-react';
 import useUIStore from '../store/uiStore';
 import useNoteStore from '../store/noteStore';
+import useBodyScrollLock from '../hooks/useBodyScrollLock';
 
 const SearchModal = () => {
   const [query, setQuery] = useState('');
@@ -12,6 +13,9 @@ const SearchModal = () => {
   const { notes, fetchNotes } = useNoteStore();
   const navigate = useNavigate();
   const inputRef = useRef(null);
+
+  // Lock body scroll when modal is open (fixes iOS touch passthrough)
+  useBodyScrollLock(isSearchOpen);
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -81,7 +85,7 @@ const SearchModal = () => {
             onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
             onTouchMove={(e) => e.stopPropagation()}
           >
-            <div className="bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[85vh] sm:max-h-[70vh] flex flex-col">
+            <div className="modal-scroll-content bg-white dark:bg-dark-900 border border-gray-200 dark:border-dark-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[85vh] sm:max-h-[70vh] flex flex-col">
               {/* Search Input */}
               <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 border-b border-gray-200 dark:border-dark-700 shrink-0">
                 <Search className="w-5 h-5 text-gray-400 dark:text-dark-400 shrink-0" />
